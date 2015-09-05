@@ -14,7 +14,7 @@ clean:
 $(DIST):
 	mkdir -p $(DIST)
 
-$(JSDEST): $(DIST)
+$(JSDEST): $(SRC) $(DIST)
 	./node_modules/.bin/uglifyjs $(SRC) -c -m -o $(JSDEST)
 	ls -l $(JSDEST)
 
