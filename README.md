@@ -1,4 +1,8 @@
-# Int64/Uint64 - 64bit Long Integer Buffer Pure JavaScript
+# Int64/Uint64 - 64bit Long Integer Buffer Pure JavaScript [![Build Status](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master)](https://travis-ci.org/kawanet/int64-buffer)
+
+JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module could keep 64 bit and loose no bits.
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/int64-buffer.svg)](https://saucelabs.com/u/int64-buffer)
 
 ### Features
 
@@ -6,10 +10,9 @@
 - Big endian representation in 8 bytes internal buffer.
 - Buffer object is used per default on Node.js.
 - Int8Array or Array object is used per default on Web browsers.
-- No math methods such as add(), sub(), mul(), etc.
-- No bigger integer such as Int128 supported. This focuses Int64 only.
-
-JavaScript's IEEE-754 format number only handles [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module keeps 64 bit precision and loose no bits. This module focuses 64 bit integer only. If you need some math methods or more bigger integer such as 128 bits, try [other modules](https://www.npmjs.com/search?q=bignum).
+- No math methods such as add(), sub(), mul(), div() etc.
+- Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
+- [Tested](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master) on node.js-v0.10, v0.12, io.js-v3.3 and [Web browsers](https://saucelabs.com/u/int64-buffer)
 
 ### Usage
 
@@ -36,10 +39,10 @@ console.log(big - 0); // 9223372036854776000
 They also accept a string representation for bigger number.
 
 ```js
-var big = Uint64BE("12345678901234567890");
+var big = Int64BE("1234567890123456789");
 
-console.log(big.toString(10)); // "12345678901234567890"
-console.log(big.toJSON(10)); // "12345678901234567890"
+console.log(big.toString(10)); // "1234567890123456789"
+console.log(big.toJSON(10)); // "1234567890123456789"
 ```
 
 The both constructors also accept an Array or Array-like object with 8 elements.
@@ -51,6 +54,32 @@ console.log(big.toString(16)); // "123456789abcdef"
 console.log(big.toBuffer()); // <Buffer 01 23 45 67 89 ab cd ef>
 console.log(big.toArrayBuffer().byteLength); // 8
 console.log(big.toArray()); // [ 1, 35, 69, 103, 137, 171, 205, 239 ]
+```
+
+### Browsers Build
+
+[int64-buffer.min.js](https://rawgithub.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js) supports modern Web browsers as well as legends of IE8. It's only 2KB minified, 1KB gzipped.
+
+```html
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script src="https://rawgithub.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js"></script>
+<script>
+
+  var i = Int64BE("1234567890123456789");
+  
+  console.log(i.toString(10)); // "1234567890123456789"
+  
+  var u = new Uint64BE([0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF]);
+  
+  console.log(u.toString(16)); // "123456789abcdef"
+
+</script>
+```
+
+### Installation
+
+```sh
+npm install int64-buffer --save
 ```
 
 ### The MIT License (MIT)
