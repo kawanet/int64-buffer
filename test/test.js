@@ -10,6 +10,7 @@ var reduce = Array.prototype.reduce;
 var forEach = Array.prototype.forEach;
 var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
 var ARRAYBUFFER = ("undefined" !== typeof ArrayBuffer) && ArrayBuffer;
+var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
 
 var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 var POS1 = [0, 0, 0, 0, 0, 0, 0, 1];
@@ -17,6 +18,8 @@ var NEG1 = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
 var POSB = [0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF];
 var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
 var FLOAT_MAX = Math.pow(2, 53);
+var CLASS = {Int64BE: Int64BE, Uint64BE: Uint64BE};
+var STORAGES = {Buffer: BUFFER, Uint8Array: Uint8Array, Array: Array};
 
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
@@ -310,6 +313,39 @@ describe("Int64BE(1)", function() {
       var c = new Uint64BE(val);
       assert.equal(toHex(c.buffer), toHex(POS1));
       assert.equal(c - 0, 1);
+    });
+  });
+});
+
+Object.keys(CLASS).forEach(function(int64Name) {
+  var Int64Class = CLASS[int64Name];
+  describe(int64Name, function() {
+    Object.keys(STORAGES).forEach(function(storageName) {
+      var StorageClass = STORAGES[storageName];
+      var itSkip = StorageClass ? it : it.skip;
+      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset)", function() {
+        var buffer = new StorageClass(24);
+        for (var i = 0; i < 24; i++) {
+          buffer[i] = i;
+        }
+        var val = new Int64Class(buffer, 8);
+        assert.equal(Math.round(val.toNumber() / 0x1000000), 0x08090A0B0C); // higher 48bits
+        assert.equal(val.toString(16), "8090a0b0c0d0e0f");
+        assert.equal(val.toJSON(), "579005069656919567");
+        var array = val.toArray();
+        assert.equal(toHex(array), "08090a0b0c0d0e0f");
+        assert.ok(array instanceof Array);
+        if (BUFFER) {
+          var buffer = val.toBuffer();
+          assert.equal(toHex(buffer), "08090a0b0c0d0e0f");
+          assert.ok(BUFFER.isBuffer(buffer));
+        }
+        if (UINT8ARRAY) {
+          var arraybuffer = val.toArrayBuffer();
+          assert.equal(toHex(new Uint8Array(arraybuffer)), "08090a0b0c0d0e0f");
+          assert.ok(arraybuffer instanceof ArrayBuffer);
+        }
+      });
     });
   });
 });
