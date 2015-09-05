@@ -4,18 +4,18 @@
 /*jshint -W030 */ // Expected an assignment or function call and instead saw an expression.
 /*jshint -W093 */ // Did you mean to return a conditional instead of an assignment?
 
-function Uint64BE(source) {
-  return Uint64BE.init(this, source);
-}
+var Uint64BE, Int64BE;
 
-function Int64BE(source) {
-  return Int64BE.init(this, source);
-}
+!function(exports) {
+  exports.Uint64BE = Uint64BE = function(source) {
+    if (!(this instanceof Uint64BE)) return new Uint64BE(source);
+    return init(this, source);
+  };
 
-!function(exports, Uint64BE, Int64BE) {
-  exports.Uint64BE = Uint64BE;
-  exports.Int64BE = Int64BE;
-  Uint64BE.init = Int64BE.init = init;
+  exports.Int64BE = Int64BE = function(source) {
+    if (!(this instanceof Int64BE)) return new Int64BE(source);
+    return init(this, source);
+  };
 
   var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
   var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
@@ -28,7 +28,6 @@ function Int64BE(source) {
   var BIT24 = 16777216;
 
   function init(that, source) {
-    if (!(that instanceof this)) return new this(source);
     if ("string" === typeof source) {
       fromString(initStorage(that), source);
     } else if (source && source.length === 8 && "number" === typeof source[0]) {
@@ -192,4 +191,4 @@ function Int64BE(source) {
     return array instanceof Array;
   }
 
-}(this || {}, Uint64BE, Int64BE);
+}(this || {});
