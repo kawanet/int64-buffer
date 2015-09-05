@@ -86,6 +86,10 @@ console.log(big.toArray()); // [ 1, 35, 69, 103, 137, 171, 205, 239 ]
 npm install int64-buffer --save
 ```
 
+### GitHub
+
+- [https://github.com/kawanet/int64-buffer](https://github.com/kawanet/int64-buffer)
+
 ### The MIT License (MIT)
 
 Copyright (c) 2015 Yusuke Kawasaki

@@ -1,10 +1,10 @@
 {
-  "name": "node-uint64",
+  "name": "int64-buffer",
   "description": "64bit Long Integer on Buffer/ArrayBuffer in Pure JavaScript",
   "version": "0.1.0",
   "author": "@kawanet",
   "bugs": {
-    "url": "https://github.com/kawanet/node-uint64/issues"
+    "url": "https://github.com/kawanet/int64-buffer/issues"
   },
   "devDependencies": {
     "jshint": "^2.8.0",
@@ -12,7 +12,7 @@
     "uglify-js": "^2.4.24",
     "zuul": "^3.4.0"
   },
-  "homepage": "https://github.com/kawanet/node-uint64",
+  "homepage": "https://github.com/kawanet/int64-buffer",
   "jshintConfig": {
     "globals": {
       "describe": true,
@@ -39,7 +39,7 @@
   "main": "int64-buffer.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kawanet/node-uint64.git"
+    "url": "git+https://github.com/kawanet/int64-buffer.git"
   },
   "scripts": {
     "test": "make test"
