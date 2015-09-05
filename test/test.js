@@ -1,6 +1,7 @@
 // test.js
 
-var assert = {equal: equal};
+assert.equal = equal;
+assert.ok = assert;
 
 var exported = ("undefined" !== typeof require) ? require("../int64-buffer") : window;
 var Uint64BE = exported.Uint64BE;
@@ -22,7 +23,6 @@ describe("Uint64BE(array)", function() {
     it(toHex(exp) + " = " + val, function() {
       var c = new Uint64BE(exp);
       assert.equal(toHex(c.buffer), toHex(exp));
-      if (isNaN(val)) val = 0;
       assert.equal(c - 0, val);
     });
     return val * 256;
@@ -31,8 +31,8 @@ describe("Uint64BE(array)", function() {
 
 describe("Int64BE(array)", function() {
   forEach.call([
-    [0x0000000000000000, 0, 0, 0, 0, 0, 0, 0, 0x00], // 0
-    [0x0000000000000001, 0, 0, 0, 0, 0, 0, 0, 0x01], // 1
+    [0x0000000000000000, 0, 0, 0, 0, 0, 0, 0, 0], // 0
+    [0x0000000000000001, 0, 0, 0, 0, 0, 0, 0, 1], // 1
     [0x4000000000000000, 0x40, 0, 0, 0, 0, 0, 0, 0],
     [-1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
   ], function(exp) {
@@ -146,10 +146,28 @@ describe("Int64BE(1)", function() {
   }, 1);
 });
 
+describe("misc", function() {
+  it("Uint64BE(1)", function() {
+    var c = Uint64BE(1);
+    assert.ok(c instanceof Uint64BE);
+    assert.equal(c, 1);
+  });
+  
+  it("Int64BE(-1)", function() {
+    var c = Int64BE(-1);
+    assert.ok(c instanceof Int64BE);
+    assert.equal(c, -1);
+  });
+});
+
 function toHex(array) {
   return Array.prototype.map.call(array, function(val) {
     return val > 16 ? val.toString(16) : "0" + val.toString(16);
   }).join(" ");
+}
+
+function assert(value) {
+  if (!value) throw new Error(value + " = " + true);
 }
 
 function equal(actual, expected) {

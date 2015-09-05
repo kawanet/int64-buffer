@@ -1,11 +1,11 @@
 // int64-buffer.js
 
 function Uint64BE(source) {
-  Uint64BE.init(this, source);
+  return Uint64BE.init(this, source);
 }
 
 function Int64BE(source) {
-  Int64BE.init(this, source);
+  return Int64BE.init(this, source);
 }
 
 !function(exports, Uint64BE, Int64BE) {
@@ -20,6 +20,7 @@ function Int64BE(source) {
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 
   function init(that, source) {
+    if (!(that instanceof this)) return new this(source);
     if (source && source.length === 8 && "number" === typeof source[0]) {
       that.buffer = source;
     } else if (source > 0) {
