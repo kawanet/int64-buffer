@@ -58,6 +58,13 @@ describe("UInt64BE", function() {
     }
   });
 
+  it("UInt64BE().toJSON()", function() {
+    [POS1, POSB, NEG1, NEGB].forEach(function(array) {
+      var c = UInt64BE(array);
+      assert.equal(c.toJSON(), c.toString(10));
+    });
+  });
+
   it("UInt64BE().toArray()", function() {
     var val = UInt64BE(1).toArray();
     assert.ok(val instanceof Array);
@@ -126,6 +133,13 @@ describe("Int64BE", function() {
       val = val * 16 - col;
       str += col;
     }
+  });
+
+  it("Int64BE().toJSON()", function() {
+    [POS1, POSB, NEG1, NEGB].forEach(function(array) {
+      var c = Int64BE(array);
+      assert.equal(c.toJSON(), c.toString(10));
+    });
   });
 
   it("Int64BE().toArray()", function() {

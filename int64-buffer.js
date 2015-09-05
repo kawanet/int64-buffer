@@ -94,6 +94,10 @@ var UInt64BE, Int64BE;
     return toString(this.buffer, radix);
   };
 
+  UPROTO.toJSON = IPROTO.toJSON = function() {
+    return this.toString(10);
+  };
+
   // private methods
 
   function neg(buffer) {

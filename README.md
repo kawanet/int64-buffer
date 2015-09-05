@@ -39,6 +39,7 @@ They also accept a string representation for bigger number.
 var big = UInt64BE("12345678901234567890");
 
 console.log(big.toString(10)); // "12345678901234567890"
+console.log(big.toJSON(10)); // "12345678901234567890"
 ```
 
 The both constructors also accept an Array or Array-like object with 8 elements.
