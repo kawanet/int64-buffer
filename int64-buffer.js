@@ -15,7 +15,6 @@ function Int64BE(source) {
 
   var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
   var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
-
   var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -24,45 +23,55 @@ function Int64BE(source) {
     if (source && source.length === 8 && "number" === typeof source[0]) {
       that.buffer = source;
     } else if (source > 0) {
-      writeUint64BE((that.buffer = new STORAGE(8)), source); // positinve
+      writeUint64BE.call((that.buffer = new STORAGE(8)), source); // positinve
     } else if (source < 0) {
-      writeInt64BE((that.buffer = new STORAGE(8)), source); // negative
+      writeInt64BE.call((that.buffer = new STORAGE(8)), source); // negative
     } else {
       that.buffer = toStorage(ZERO); // zero, NaN and others
     }
   }
 
+  var Uint64BE_prototype = Uint64BE.prototype;
+  var Int64BE_prototype = Int64BE.prototype;
+  Uint64BE_prototype.valueOf = function() {
+    return readUInt64BE.call(this.buffer, 0);
+  };
+
+  Int64BE_prototype.valueOf = function() {
+    return readInt64BE.call(this.buffer, 0);
+  };
+
   function toStorage(buffer) {
     return (STORAGE === Array) ? Array.prototype.slice.call(buffer, 0, 8) : new STORAGE(buffer);
   }
 
-  Uint64BE.prototype.valueOf = function() {
-    var upper = readUInt32BE(this.buffer, 0);
-    var lower = readUInt32BE(this.buffer, 4);
+  function readUInt64BE(offset) {
+    var upper = readUInt32BE.call(this, offset);
+    var lower = readUInt32BE.call(this, offset + 4);
     return upper ? (upper * 4294967296 + lower) : lower;
-  };
-
-  Int64BE.prototype.valueOf = function() {
-    var upper = readUInt32BE(this.buffer, 0) | 0; // a trick to get signed
-    var lower = readUInt32BE(this.buffer, 4);
-    return upper ? (upper * 4294967296 + lower) : lower;
-  };
-
-  function readUInt32BE(buffer, offset) {
-    return (buffer[offset++] * 16777216) + (buffer[offset++] << 16) + (buffer[offset++] << 8) + buffer[offset];
   }
 
-  function writeUint64BE(buffer, value) {
+  function readInt64BE(offset) {
+    var upper = readUInt32BE.call(this, offset) | 0; // a trick to get signed
+    var lower = readUInt32BE.call(this, offset + 4);
+    return upper ? (upper * 4294967296 + lower) : lower;
+  }
+
+  function readUInt32BE(offset) {
+    return (this[offset++] * 16777216) + (this[offset++] << 16) + (this[offset++] << 8) + this[offset];
+  }
+
+  function writeUint64BE(value) {
     for (var i = 7; i >= 0; i--) {
-      buffer[i] = value & 255;
+      this[i] = value & 255;
       value /= 256;
     }
   }
 
-  function writeInt64BE(buffer, value) {
+  function writeInt64BE(value) {
     value++;
     for (var i = 7; i >= 0; i--) {
-      buffer[i] = ((-value) & 255) ^ 255;
+      this[i] = ((-value) & 255) ^ 255;
       value /= 256;
     }
   }
