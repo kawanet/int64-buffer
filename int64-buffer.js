@@ -63,16 +63,14 @@ function Int64BE(source) {
   }
 
   Int64BE_prototype.toString = function(radix) {
-    var buffer = newArray(this.buffer);
-    if (buffer[0] & 0x80) {
-      return "-" + toString(neg(buffer), radix);
-    } else {
-      return toString(buffer, radix);
-    }
+    var buffer = this.buffer;
+    var sign = (buffer[0] & 0x80) ? "-" : "";
+    if (sign) buffer = neg(newArray(buffer));
+    return sign + toString(buffer, radix);
   };
 
   Uint64BE_prototype.toString = function(radix) {
-    return toString(newArray(this.buffer), radix);
+    return toString(this.buffer, radix);
   };
 
   function neg(buffer) {
@@ -108,19 +106,15 @@ function Int64BE(source) {
 
   function toString(buffer, radix) {
     var str = "";
-    if (!radix) radix = 10;
-    var len = buffer.length;
+    var high = readUInt32BE.call(buffer, 0);
+    var low = readUInt32BE.call(buffer, 4);
+    radix = radix || 10;
     while (1) {
-      var mod = 0;
-      var bit = 0;
-      for (var i = 0; i < len; i++) {
-        var quot = mod * 256 + buffer[i];
-        var div = buffer[i] = Math.floor(quot / radix);
-        bit = bit | div;
-        mod = quot % radix;
-      }
-      str = mod.toString(radix) + str;
-      if (!bit) break;
+      var mod = (high % radix) * BIT32 + low;
+      high = Math.floor(high / radix);
+      low = Math.floor(mod / radix);
+      str = (mod % radix).toString(radix) + str;
+      if (!high && !low) break;
     }
     return str;
   }
