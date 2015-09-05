@@ -54,6 +54,50 @@ function Int64BE(source) {
     Uint64BE_prototype.toArrayBuffer = Int64BE_prototype.toArrayBuffer = toArrayBuffer;
   }
 
+  Int64BE_prototype.toString = function(radix) {
+    var buffer = newArray(this.buffer);
+    if (buffer[0] & 0x80) {
+      return "-" + toString(neg(buffer), radix);
+    } else {
+      return toString(buffer, radix);
+    }
+  };
+
+  Uint64BE_prototype.toString = function(radix) {
+    return toString(newArray(this.buffer), radix);
+  };
+
+  function neg(buffer) {
+    var p = 1;
+    var sign = buffer[0] & 0x80;
+    for (var i = buffer.length - 1; i >= 0; i--) {
+      var q = (buffer[i] ^ 255) + p;
+      p = (q > 255) ? 1 : 0;
+      buffer[i] = p ? 0 : q;
+    }
+    buffer[0] = (buffer[0] & 0x7F) | (sign ^ 0x80);
+    return buffer;
+  }
+
+  function toString(buffer, radix) {
+    var str = "";
+    if (!radix) radix = 10;
+    var len = buffer.length;
+    while (1) {
+      var mod = 0;
+      var bit = 0;
+      for (var i = 0; i < len; i++) {
+        var quot = mod * 256 + buffer[i];
+        var div = buffer[i] = Math.floor(quot / radix);
+        bit = bit | div;
+        mod = quot % radix;
+      }
+      str = mod.toString(radix) + str;
+      if (!bit) break;
+    }
+    return str;
+  }
+
   function toArray() {
     var buffer = this.buffer;
     return isArray(buffer) ? buffer : newArray(buffer);
@@ -67,7 +111,7 @@ function Int64BE(source) {
   function toArrayBuffer() {
     var buffer = this.buffer;
     var bufbuf = buffer && buffer.buffer;
-    return (bufbuf && (bufbuf instanceof ArrayBuffer)) ? bufbuf : (new UINT8ARRAY(buffer)).buffer;
+    return (bufbuf instanceof ArrayBuffer) ? bufbuf : (new UINT8ARRAY(buffer)).buffer;
   }
 
   function newStorage(buffer) {
