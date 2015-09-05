@@ -78,7 +78,7 @@ var UInt64BE, Int64BE;
   if (UINT8ARRAY) {
     UPROTO.toArrayBuffer = IPROTO.toArrayBuffer = function() {
       var buffer = this.buffer;
-      var arrbuf = buffer && buffer.buffer;
+      var arrbuf = !isBuffer(buffer) && buffer && buffer.buffer;
       return (arrbuf instanceof ArrayBuffer) ? arrbuf : (new UINT8ARRAY(buffer)).buffer;
     };
   }

@@ -80,6 +80,7 @@ describe("UInt64BE", function() {
   itArrayBuffer("UInt64BE().toArrayBuffer()", function() {
     var val = UInt64BE(1).toArrayBuffer();
     assert.ok(val instanceof ArrayBuffer);
+    assert.equal(val.byteLength, 8);
     assert.equal(toHex(new Uint8Array(val)), toHex(POS1));
   });
 
@@ -157,6 +158,7 @@ describe("Int64BE", function() {
   itArrayBuffer("Int64BE().toArrayBuffer()", function() {
     var val = Int64BE(-1).toArrayBuffer();
     assert.ok(val instanceof ArrayBuffer);
+    assert.equal(val.byteLength, 8);
     assert.equal(toHex(new Uint8Array(val)), toHex(NEG1));
   });
 
