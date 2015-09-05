@@ -22,7 +22,7 @@ describe("Uint64BE(array)", function() {
     var val = exp.shift();
     it(toHex(exp) + " = " + val, function() {
       var c = new Uint64BE(exp);
-      assert.equal(toHex(c.buffer), toHex(exp));
+      assert.equal(toHex(c.toArray()), toHex(exp));
       assert.equal(c - 0, val);
     });
     return val * 256;
@@ -39,7 +39,7 @@ describe("Int64BE(array)", function() {
     var val = exp.shift();
     it(toHex(exp) + " = " + val, function() {
       var c = new Int64BE(exp);
-      assert.equal(toHex(c.buffer), toHex(exp));
+      assert.equal(toHex(c.toArray()), toHex(exp));
       assert.equal(c - 0, val);
     });
     return val * 256;
@@ -59,7 +59,7 @@ describe("Uint64BE(high1)", function() {
   ], function(val, exp) {
     it(toHex(exp) + " = " + val, function() {
       var c = new Uint64BE(val);
-      assert.equal(toHex(c.buffer), toHex(exp));
+      assert.equal(toHex(c.toArray()), toHex(exp));
       assert.equal(c - 0, val);
     });
     return val * 256;
@@ -76,7 +76,7 @@ describe("Uint64BE(high32)", function() {
   ], function(val, exp) {
     it(toHex(exp) + " = " + val, function() {
       var c = new Uint64BE(val);
-      assert.equal(toHex(c.buffer), toHex(exp));
+      assert.equal(toHex(c.toArray()), toHex(exp));
     });
     return val * 256;
   }, 0xFFFFFFFF);
@@ -95,7 +95,7 @@ describe("Int64BE(low1)", function() {
   ], function(val, exp) {
     it(toHex(exp) + " = " + val, function() {
       var c = new Int64BE(val);
-      assert.equal(toHex(c.buffer), toHex(exp));
+      assert.equal(toHex(c.toArray()), toHex(exp));
       assert.equal(c - 0, val);
     });
     return (val * 256) + 255;
@@ -112,7 +112,7 @@ describe("Int64BE(low31)", function() {
   ], function(val, exp) {
     it(toHex(exp) + " = " + val, function() {
       var c = new Int64BE(val);
-      assert.equal(toHex(c.buffer), toHex(exp));
+      assert.equal(toHex(c.toArray()), toHex(exp));
       assert.equal(c - 0, val);
     });
     return (val * 256) + 255;
@@ -127,7 +127,7 @@ describe("Int64BE(0)", function() {
     var view = ("string" === typeof val) ? '"' + val + '"' : val;
     it(toHex(ZERO) + " = " + view, function() {
       var c = new Uint64BE(val);
-      assert.equal(toHex(c.buffer), toHex(ZERO));
+      assert.equal(toHex(c.toArray()), toHex(ZERO));
     });
     return val * 256;
   }, 1);
@@ -140,7 +140,7 @@ describe("Int64BE(1)", function() {
     var view = ("string" === typeof val) ? '"' + val + '"' : val;
     it(toHex(ONE) + " = " + view, function() {
       var c = new Uint64BE(val);
-      assert.equal(toHex(c.buffer), toHex(ONE));
+      assert.equal(toHex(c.toArray()), toHex(ONE));
     });
     return val * 256;
   }, 1);
@@ -152,7 +152,7 @@ describe("misc", function() {
     assert.ok(c instanceof Uint64BE);
     assert.equal(c, 1);
   });
-  
+
   it("Int64BE(-1)", function() {
     var c = Int64BE(-1);
     assert.ok(c instanceof Int64BE);

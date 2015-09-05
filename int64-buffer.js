@@ -17,6 +17,8 @@ function Int64BE(source) {
   var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
   var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
+  var fromArray = (STORAGE === Array) ? newArray : newStorage;
+  var isArray = Array.isArray || _isArray;
 
   function init(that, source) {
     if (!(that instanceof this)) return new this(source);
@@ -27,7 +29,7 @@ function Int64BE(source) {
     } else if (source < 0) {
       writeInt64BE.call((that.buffer = new STORAGE(8)), source); // negative
     } else {
-      that.buffer = toStorage(ZERO); // zero, NaN and others
+      that.buffer = fromArray(ZERO); // zero, NaN and others
     }
   }
 
@@ -41,8 +43,18 @@ function Int64BE(source) {
     return readInt64BE.call(this.buffer, 0);
   };
 
-  function toStorage(buffer) {
-    return (STORAGE === Array) ? Array.prototype.slice.call(buffer, 0, 8) : new STORAGE(buffer);
+  Uint64BE_prototype.toArray = Int64BE_prototype.toArray = toArray;
+
+  function toArray() {
+    return isArray(this.buffer) ? this.buffer : newArray(this.buffer);
+  }
+
+  function newStorage(buffer) {
+    return new STORAGE(buffer);
+  }
+
+  function newArray(buffer) {
+    return Array.prototype.slice.call(buffer, 0, 8);
   }
 
   function readUInt64BE(offset) {
@@ -74,6 +86,10 @@ function Int64BE(source) {
       this[i] = ((-value) & 255) ^ 255;
       value /= 256;
     }
+  }
+
+  function _isArray(array) {
+    return array instanceof Array;
   }
 
 }(this || {}, Uint64BE, Int64BE);
