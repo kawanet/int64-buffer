@@ -1,5 +1,8 @@
 // int64-buffer.js
 
+/*jshint -W018 */ // Confusing use of '!'.
+/*jshint -W030 */ // Expected an assignment or function call and instead saw an expression.
+
 function Uint64BE(source) {
   return Uint64BE.init(this, source);
 }
