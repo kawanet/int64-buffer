@@ -8,9 +8,38 @@ var Uint64BE = exported.Uint64BE;
 var Int64BE = exported.Int64BE;
 var reduce = Array.prototype.reduce;
 var forEach = Array.prototype.forEach;
+var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
 
 var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 var ONE = [0, 0, 0, 0, 0, 0, 0, 1];
+
+it.skipBuffer = BUFFER ? it : it.skip;
+
+describe("Uint64BE", function() {
+  it("Uint64BE().toArray()", function() {
+    var c = Uint64BE();
+    assert.ok(c instanceof Uint64BE);
+    assert.ok(c.toArray() instanceof Array);
+  });
+
+  it.skipBuffer("Uint64BE().toBuffer()", function() {
+    var c = Uint64BE();
+    assert.ok(BUFFER.isBuffer(c.toBuffer()));
+  });
+});
+
+describe("Int64BE", function() {
+  it("Int64BE().toArray()", function() {
+    var c = Int64BE();
+    assert.ok(c instanceof Int64BE);
+    assert.ok(c.toArray() instanceof Array);
+  });
+
+  it.skipBuffer("Int64BE().toBuffer()", function() {
+    var c = Int64BE();
+    assert.ok(BUFFER.isBuffer(c.toBuffer()));
+  });
+});
 
 describe("Uint64BE(array)", function() {
   forEach.call([
@@ -144,20 +173,6 @@ describe("Int64BE(1)", function() {
     });
     return val * 256;
   }, 1);
-});
-
-describe("misc", function() {
-  it("Uint64BE(1)", function() {
-    var c = Uint64BE(1);
-    assert.ok(c instanceof Uint64BE);
-    assert.equal(c, 1);
-  });
-
-  it("Int64BE(-1)", function() {
-    var c = Int64BE(-1);
-    assert.ok(c instanceof Int64BE);
-    assert.equal(c, -1);
-  });
 });
 
 function toHex(array) {

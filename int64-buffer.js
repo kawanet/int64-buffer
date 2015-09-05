@@ -19,6 +19,7 @@ function Int64BE(source) {
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
   var fromArray = (STORAGE === Array) ? newArray : newStorage;
   var isArray = Array.isArray || _isArray;
+  var isBuffer = BUFFER && BUFFER.isBuffer;
 
   function init(that, source) {
     if (!(that instanceof this)) return new this(source);
@@ -45,8 +46,18 @@ function Int64BE(source) {
 
   Uint64BE_prototype.toArray = Int64BE_prototype.toArray = toArray;
 
+  if (BUFFER) {
+    Uint64BE_prototype.toBuffer = Int64BE_prototype.toBuffer = toBuffer;
+  }
+
   function toArray() {
-    return isArray(this.buffer) ? this.buffer : newArray(this.buffer);
+    var buffer = this.buffer;
+    return isArray(buffer) ? buffer : newArray(buffer);
+  }
+
+  function toBuffer() {
+    var buffer = this.buffer;
+    return (isBuffer && isBuffer(buffer)) ? buffer : new BUFFER(buffer);
   }
 
   function newStorage(buffer) {
