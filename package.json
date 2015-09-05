@@ -1,0 +1,19 @@
+{
+  "name": "node-uint64",
+  "version": "0.1.0",
+  "description": "Unsigned and Signed 64bit Integer in pure JavaScript",
+  "main": "int64-buffer.js",
+  "scripts": {
+    "test": "mocha -R spec test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawanet/node-uint64.git"
+  },
+  "author": "@kawanet",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kawanet/node-uint64/issues"
+  },
+  "homepage": "https://github.com/kawanet/node-uint64#readme"
+}
