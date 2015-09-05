@@ -40,13 +40,10 @@ describe("UInt64BE", function() {
     var str = "1";
     while (val < FLOAT_MAX) {
       assert.equal(UInt64BE(val).toString(10), str);
-      assert.equal(UInt64BE(str).valueOf(), val);
       col = (col + 1) % 10;
       val = val * 10 + col;
       str += col;
     }
-    assert.equal(toHex(UInt64BE(UInt64BE(POSB).toString(10)).buffer), toHex(POSB));
-    assert.equal(toHex(UInt64BE(UInt64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 
   it("UInt64BE().toString(16)", function() {
@@ -59,8 +56,6 @@ describe("UInt64BE", function() {
       val = val * 16 + col;
       str += col;
     }
-    assert.equal(toHex(Int64BE(Int64BE(POSB).toString(10)).buffer), toHex(POSB));
-    assert.equal(toHex(Int64BE(Int64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 
   it("UInt64BE().toArray()", function() {
@@ -79,6 +74,20 @@ describe("UInt64BE", function() {
     var val = UInt64BE(1).toArrayBuffer();
     assert.ok(val instanceof ArrayBuffer);
     assert.equal(toHex(new Uint8Array(val)), toHex(POS1));
+  });
+
+  it("UInt64BE(string).toString()", function() {
+    var col = 1;
+    var val = 1;
+    var str = "1";
+    while (val < FLOAT_MAX) {
+      assert.equal(UInt64BE(str) - 0, val);
+      col = (col + 1) % 10;
+      val = val * 10 + col;
+      str += col;
+    }
+    assert.equal(toHex(UInt64BE(UInt64BE(POSB).toString(10)).buffer), toHex(POSB));
+    assert.equal(toHex(UInt64BE(UInt64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 });
 
@@ -101,7 +110,6 @@ describe("Int64BE", function() {
     var str = "-1";
     while (val > FLOAT_MAX) {
       assert.equal(Int64BE(val).toString(10), str);
-      assert.equal(Int64BE(str).valueOf(), val);
       col = (col + 1) % 10;
       val = val * 10 - col;
       str += col;
@@ -136,6 +144,20 @@ describe("Int64BE", function() {
     var val = Int64BE(-1).toArrayBuffer();
     assert.ok(val instanceof ArrayBuffer);
     assert.equal(toHex(new Uint8Array(val)), toHex(NEG1));
+  });
+
+  it("Int64BE(string).toString()", function() {
+    var col = 1;
+    var val = -1;
+    var str = "-1";
+    while (val > FLOAT_MAX) {
+      assert.equal(Int64BE(str) - 0, val);
+      col = (col + 1) % 10;
+      val = val * 10 - col;
+      str += col;
+    }
+    assert.equal(toHex(Int64BE(Int64BE(POSB).toString(10)).buffer), toHex(POSB));
+    assert.equal(toHex(Int64BE(Int64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 });
 
