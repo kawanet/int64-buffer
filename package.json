@@ -1,6 +1,6 @@
 {
   "name": "node-uint64",
-  "description": "64bit Integer in pure JavaScript",
+  "description": "64bit Long Integer on Buffer/ArrayBuffer in Pure JavaScript",
   "version": "0.1.0",
   "author": "@kawanet",
   "bugs": {
@@ -22,6 +22,19 @@
     "node": true,
     "undef": true
   },
+  "keywords": [
+    "64bit",
+    "IEEE-754",
+    "buffer",
+    "int",
+    "int64",
+    "integer",
+    "long",
+    "longlong",
+    "signed",
+    "uint64",
+    "unsinged"
+  ],
   "license": "MIT",
   "main": "int64-buffer.js",
   "repository": {

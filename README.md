@@ -1,8 +1,10 @@
-# Int64/Uint64 - 64bit Long Integer Buffer Pure JavaScript [![Build Status](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master)](https://travis-ci.org/kawanet/int64-buffer)
+# int64-buffer [![npm version](https://badge.fury.io/js/int64-buffer.svg)](http://badge.fury.io/js/int64-buffer) [![Build Status](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master)](https://travis-ci.org/kawanet/int64-buffer)
 
-JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module could keep 64 bit and loose no bits.
+64bit Long Integer on Buffer/ArrayBuffer in Pure JavaScript
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/int64-buffer.svg)](https://saucelabs.com/u/int64-buffer)
+
+JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module provides a couple of classes Int64BE and Uint64BE. Both could keep 64 bit long integer and loose no bits.
 
 ### Features
 
@@ -36,23 +38,27 @@ var big = new Uint64BE(Math.pow(2, 63));
 console.log(big - 0); // 9223372036854776000
 ```
 
-They also accept a string representation for bigger number.
+Both also accept a string representation for bigger number.
 
 ```js
 var big = Int64BE("1234567890123456789");
 
 console.log(big.toString(10)); // "1234567890123456789"
-console.log(big.toJSON(10)); // "1234567890123456789"
+
+console.log(big.toJSON()); // "1234567890123456789" as string
 ```
 
-The both constructors also accept an Array or Array-like object with 8 elements.
+Both accept an Array or Array-like object with 8 elements as well.
 
 ```js
 var big = new Uint64BE([0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF]);
 
 console.log(big.toString(16)); // "123456789abcdef"
+
 console.log(big.toBuffer()); // <Buffer 01 23 45 67 89 ab cd ef>
+
 console.log(big.toArrayBuffer().byteLength); // 8
+
 console.log(big.toArray()); // [ 1, 35, 69, 103, 137, 171, 205, 239 ]
 ```
 
@@ -66,11 +72,9 @@ console.log(big.toArray()); // [ 1, 35, 69, 103, 137, 171, 205, 239 ]
 <script>
 
   var i = Int64BE("1234567890123456789");
-  
   console.log(i.toString(10)); // "1234567890123456789"
   
   var u = new Uint64BE([0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF]);
-  
   console.log(u.toString(16)); // "123456789abcdef"
 
 </script>
