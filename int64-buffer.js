@@ -4,13 +4,13 @@
 /*jshint -W030 */ // Expected an assignment or function call and instead saw an expression.
 /*jshint -W093 */ // Did you mean to return a conditional instead of an assignment?
 
-var UInt64BE, Int64BE;
+var Uint64BE, Int64BE;
 
 !function(exports) {
   // constructors
 
-  var U = exports.UInt64BE = UInt64BE = function(source) {
-    if (!(this instanceof UInt64BE)) return new UInt64BE(source);
+  var U = exports.Uint64BE = Uint64BE = function(source) {
+    if (!(this instanceof Uint64BE)) return new Uint64BE(source);
     return init(this, source);
   };
 
@@ -37,7 +37,7 @@ var UInt64BE, Int64BE;
     if ("string" === typeof source) {
       fromString(initStorage(that), source);
     } else if (source > 0) {
-      writeUInt64BE(initStorage(that), source); // positinve
+      writeUint64BE(initStorage(that), source); // positinve
     } else if (source < 0) {
       writeInt64BE(initStorage(that), source); // negative
     } else if (source && source.length === 8 && "number" === typeof source[0]) {
@@ -56,7 +56,7 @@ var UInt64BE, Int64BE;
   var UPROTO = U.prototype;
   var IPROTO = I.prototype;
   UPROTO.toNumber = function() {
-    return readUInt64BE(this.buffer, 0);
+    return readUint64BE(this.buffer, 0);
   };
 
   IPROTO.toNumber = function() {
@@ -155,7 +155,7 @@ var UInt64BE, Int64BE;
     return Array.prototype.slice.call(buffer, offset, offset + 8);
   }
 
-  function readUInt64BE(buffer, offset) {
+  function readUint64BE(buffer, offset) {
     var high = readUInt32BE(buffer, offset);
     var low = readUInt32BE(buffer, offset + 4);
     return high ? (high * BIT32 + low) : low;
@@ -181,7 +181,7 @@ var UInt64BE, Int64BE;
     buffer[offset] = value & 255;
   }
 
-  function writeUInt64BE(buffer, value, offset) {
+  function writeUint64BE(buffer, value, offset) {
     offset |= 0;
     for (var i = offset + 7; i >= offset; i--) {
       buffer[i] = value & 255;

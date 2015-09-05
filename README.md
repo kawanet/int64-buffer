@@ -23,12 +23,12 @@ var big = new Int64BE(-1);
 console.log(big - 0); // -1
 ```
 
-UInt64BE constructor accepts a positive number.
+Uint64BE constructor accepts a positive number.
 
 ```js
-var UInt64BE = require("int64-buffer").UInt64BE;
+var Uint64BE = require("int64-buffer").Uint64BE;
 
-var big = new UInt64BE(Math.pow(2, 63));
+var big = new Uint64BE(Math.pow(2, 63));
 
 console.log(big - 0); // 9223372036854776000
 ```
@@ -36,7 +36,7 @@ console.log(big - 0); // 9223372036854776000
 They also accept a string representation for bigger number.
 
 ```js
-var big = UInt64BE("12345678901234567890");
+var big = Uint64BE("12345678901234567890");
 
 console.log(big.toString(10)); // "12345678901234567890"
 console.log(big.toJSON(10)); // "12345678901234567890"
@@ -45,7 +45,7 @@ console.log(big.toJSON(10)); // "12345678901234567890"
 The both constructors also accept an Array or Array-like object with 8 elements.
 
 ```js
-var big = new UInt64BE([0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF]);
+var big = new Uint64BE([0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF]);
 
 console.log(big.toString(16)); // "123456789abcdef"
 console.log(big.toBuffer()); // <Buffer 01 23 45 67 89 ab cd ef>
