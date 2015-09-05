@@ -18,7 +18,16 @@ $(JSDEST): $(SRC) $(DIST)
 	./node_modules/.bin/uglifyjs $(SRC) -c -m -o $(JSDEST)
 	ls -l $(JSDEST)
 
-test: jshint mocha
+test:
+	@if [ "x$(BROWSER)" = "x" ]; then make test-node; else make test-browser; fi
+
+test-node: jshint mocha
+
+test-browser:
+	./node_modules/.bin/zuul -- $(TESTS)
+
+test-browser-local:
+	./node_modules/.bin/zuul --local 4000 -- $(TESTS)
 
 mocha:
 	./node_modules/.bin/mocha -R spec $(TESTS)
