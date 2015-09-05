@@ -4,7 +4,7 @@ assert.equal = equal;
 assert.ok = assert;
 
 var exported = ("undefined" !== typeof require) ? require("../int64-buffer") : window;
-var Uint64BE = exported.Uint64BE;
+var UInt64BE = exported.UInt64BE;
 var Int64BE = exported.Int64BE;
 var reduce = Array.prototype.reduce;
 var forEach = Array.prototype.forEach;
@@ -14,63 +14,69 @@ var ARRAYBUFFER = ("undefined" !== typeof ArrayBuffer) && ArrayBuffer;
 var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 var POS1 = [0, 0, 0, 0, 0, 0, 0, 1];
 var NEG1 = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
+var POSB = [0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF];
+var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
 var FLOAT_MAX = Math.pow(2, 53);
 
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
 
-describe("Uint64BE", function() {
-  it("Uint64BE().toNumber()", function() {
-    var val = Uint64BE(1).toNumber();
+describe("UInt64BE", function() {
+  it("UInt64BE().toNumber()", function() {
+    var val = UInt64BE(1).toNumber();
     assert.ok("number" === typeof val);
     assert.equal(val, 1);
   });
 
-  it("Uint64BE().toString()", function() {
-    var val = Uint64BE(1).toString();
+  it("UInt64BE().toString()", function() {
+    var val = UInt64BE(1).toString();
     assert.ok("string" === typeof val);
     assert.equal(val, "1");
   });
 
-  it("Uint64BE().toString(10)", function() {
+  it("UInt64BE().toString(10)", function() {
     var col = 1;
     var val = 1;
     var str = "1";
     while (val < FLOAT_MAX) {
-      assert.equal(Uint64BE(val).toString(10), str);
-      assert.equal(Uint64BE(str).valueOf(), val);
+      assert.equal(UInt64BE(val).toString(10), str);
+      assert.equal(UInt64BE(str).valueOf(), val);
       col = (col + 1) % 10;
       val = val * 10 + col;
       str += col;
     }
+    assert.equal(toHex(UInt64BE(UInt64BE(POSB).toString(10)).buffer), toHex(POSB));
+    assert.equal(toHex(UInt64BE(UInt64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 
-  it("Uint64BE().toString(16)", function() {
+  it("UInt64BE().toString(16)", function() {
     var val = 1;
     var col = 1;
     var str = "1";
     while (val < FLOAT_MAX) {
-      assert.equal(Uint64BE(val).toString(16), str);
+      assert.equal(UInt64BE(val).toString(16), str);
       col = (col + 1) % 10;
       val = val * 16 + col;
       str += col;
     }
+    assert.equal(toHex(Int64BE(Int64BE(POSB).toString(10)).buffer), toHex(POSB));
+    assert.equal(toHex(Int64BE(Int64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 
-  it("Uint64BE().toArray()", function() {
-    var val = Uint64BE(1).toArray();
+  it("UInt64BE().toArray()", function() {
+    var val = UInt64BE(1).toArray();
     assert.ok(val instanceof Array);
     assert.equal(toHex(val), toHex(POS1));
   });
 
-  itBuffer("Uint64BE().toBuffer()", function() {
-    var val = Uint64BE(1).toBuffer();
+  itBuffer("UInt64BE().toBuffer()", function() {
+    var val = UInt64BE(1).toBuffer();
     assert.ok(BUFFER.isBuffer(val));
     assert.equal(toHex(val), toHex(POS1));
   });
 
-  itArrayBuffer("Uint64BE().toArrayBuffer()", function() {
-    var val = Uint64BE(1).toArrayBuffer();
+  itArrayBuffer("UInt64BE().toArrayBuffer()", function() {
+    var val = UInt64BE(1).toArrayBuffer();
     assert.ok(val instanceof ArrayBuffer);
     assert.equal(toHex(new Uint8Array(val)), toHex(POS1));
   });
@@ -133,7 +139,7 @@ describe("Int64BE", function() {
   });
 });
 
-describe("Uint64BE(array)", function() {
+describe("UInt64BE(array)", function() {
   forEach.call([
     [0x0000000000000000, 0, 0, 0, 0, 0, 0, 0, 0], // 0
     [0x0000000000000001, 0, 0, 0, 0, 0, 0, 0, 1], // 1
@@ -142,7 +148,7 @@ describe("Uint64BE(array)", function() {
   ], function(exp) {
     var val = exp.shift();
     it(toHex(exp), function() {
-      var c = new Uint64BE(exp);
+      var c = new UInt64BE(exp);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
       assert.equal(c.toString(16), val.toString(16));
@@ -167,7 +173,7 @@ describe("Int64BE(array)", function() {
   });
 });
 
-describe("Uint64BE(high1)", function() {
+describe("UInt64BE(high1)", function() {
   reduce.call([
     [0, 0, 0, 0, 0, 0, 0, 1], // 1
     [0, 0, 0, 0, 0, 0, 1, 0], // 256
@@ -179,7 +185,7 @@ describe("Uint64BE(high1)", function() {
     [1, 0, 0, 0, 0, 0, 0, 0]
   ], function(val, exp) {
     it(toHex(exp), function() {
-      var c = new Uint64BE(val);
+      var c = new UInt64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
       assert.equal(c.toString(16), val.toString(16));
@@ -188,7 +194,7 @@ describe("Uint64BE(high1)", function() {
   }, 1);
 });
 
-describe("Uint64BE(high32)", function() {
+describe("UInt64BE(high32)", function() {
   reduce.call([
     [0, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF],
     [0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0],
@@ -197,7 +203,7 @@ describe("Uint64BE(high32)", function() {
     [0xFF, 0xFF, 0xFF, 0xFF, 0, 0, 0, 0]
   ], function(val, exp) {
     it(toHex(exp), function() {
-      var c = new Uint64BE(val);
+      var c = new UInt64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
       assert.equal(c.toString(16), val.toString(16));
@@ -250,7 +256,7 @@ describe("Int64BE(0)", function() {
   ], function(val) {
     var view = ("string" === typeof val) ? '"' + val + '"' : val;
     it(toHex(ZERO) + " = " + view, function() {
-      var c = new Uint64BE(val);
+      var c = new UInt64BE(val);
       assert.equal(toHex(c.buffer), toHex(ZERO));
       assert.equal(c - 0, 0);
     });
@@ -263,7 +269,7 @@ describe("Int64BE(1)", function() {
   ], function(val) {
     var view = ("string" === typeof val) ? '"' + val + '"' : val;
     it(toHex(POS1) + " = " + view, function() {
-      var c = new Uint64BE(val);
+      var c = new UInt64BE(val);
       assert.equal(toHex(c.buffer), toHex(POS1));
       assert.equal(c - 0, 1);
     });
