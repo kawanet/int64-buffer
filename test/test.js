@@ -14,11 +14,18 @@ var ARRAYBUFFER = ("undefined" !== typeof ArrayBuffer) && ArrayBuffer;
 var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 var POS1 = [0, 0, 0, 0, 0, 0, 0, 1];
 var NEG1 = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
+var FLOAT_MAX = Math.pow(2, 53);
 
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
 
 describe("Uint64BE", function() {
+  it("Uint64BE().toNumber()", function() {
+    var val = Uint64BE(1).toNumber();
+    assert.ok("number" === typeof val);
+    assert.equal(val, 1);
+  });
+
   it("Uint64BE().toString()", function() {
     var val = Uint64BE(1).toString();
     assert.ok("string" === typeof val);
@@ -26,11 +33,10 @@ describe("Uint64BE", function() {
   });
 
   it("Uint64BE().toString(10)", function() {
-    var max = Math.pow(2, 53);
     var col = 1;
     var val = 1;
     var str = "1";
-    while (val < max) {
+    while (val < FLOAT_MAX) {
       assert.equal(Uint64BE(val).toString(10), str);
       assert.equal(Uint64BE(str).valueOf(), val);
       col = (col + 1) % 10;
@@ -40,11 +46,10 @@ describe("Uint64BE", function() {
   });
 
   it("Uint64BE().toString(16)", function() {
-    var max = Math.pow(2, 53);
     var val = 1;
     var col = 1;
     var str = "1";
-    while (val < max) {
+    while (val < FLOAT_MAX) {
       assert.equal(Uint64BE(val).toString(16), str);
       col = (col + 1) % 10;
       val = val * 16 + col;
@@ -72,6 +77,12 @@ describe("Uint64BE", function() {
 });
 
 describe("Int64BE", function() {
+  it("Int64BE().toNumber()", function() {
+    var val = Int64BE(-1).toNumber();
+    assert.ok("number" === typeof val);
+    assert.equal(val, -1);
+  });
+
   it("Int64BE().toString()", function() {
     var val = Int64BE(-1).toString();
     assert.ok("string" === typeof val);
@@ -79,11 +90,10 @@ describe("Int64BE", function() {
   });
 
   it("Int64BE().toString(10)", function() {
-    var max = -Math.pow(2, 53);
     var col = 1;
     var val = -1;
     var str = "-1";
-    while (val > max) {
+    while (val > FLOAT_MAX) {
       assert.equal(Int64BE(val).toString(10), str);
       assert.equal(Int64BE(str).valueOf(), val);
       col = (col + 1) % 10;
@@ -93,11 +103,10 @@ describe("Int64BE", function() {
   });
 
   it("Int64BE().toString(16)", function() {
-    var max = -Math.pow(2, 53);
     var col = 1;
     var val = -1;
     var str = "-1";
-    while (val > max) {
+    while (val > FLOAT_MAX) {
       assert.equal(Int64BE(val).toString(16), str);
       col = (col + 1) % 10;
       val = val * 16 - col;

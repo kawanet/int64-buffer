@@ -44,11 +44,11 @@ function Int64BE(source) {
 
   var Uint64BE_prototype = Uint64BE.prototype;
   var Int64BE_prototype = Int64BE.prototype;
-  Uint64BE_prototype.valueOf = function() {
+  Uint64BE_prototype.toNumber = function() {
     return readUInt64BE.call(this.buffer, 0);
   };
 
-  Int64BE_prototype.valueOf = function() {
+  Int64BE_prototype.toNumber = function() {
     return readInt64BE.call(this.buffer, 0);
   };
 
