@@ -1,34 +1,55 @@
-# 64bit Integer in pure JavaScript
+# Int64/Uint64 - 64bit Long Integer Buffer Pure JavaScript
 
 ### Features
 
-- Both Singed Int64 and Unsigned Uint64
-- Big endian representation in 8 bytes internal buffer
-- Buffer object per default on Node.js
-- No math functionalities such as add(), sub(), mul(), etc.
+- Int64 for signed 64bit long integer and Uint64 for unsigned.
+- Big endian representation in 8 bytes internal buffer.
+- Buffer object is used per default on Node.js.
+- Int8Array or Array object is used per default on Web browsers.
+- No math methods such as add(), sub(), mul(), etc.
+- No bigger integer such as Int128 supported. This focuses Int64 only.
+
+JavaScript's IEEE-754 format number only handles [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module keeps 64 bit precision and loose no bits. This module focuses 64 bit integer only. If you need some math methods or more bigger integer such as 128 bits, try [other modules](https://www.npmjs.com/search?q=bignum).
 
 ### Usage
 
-```js
-var Uint64BE = require("int64-buffer").Uint64BE;
-
-var val = new Uint64BE(Math.pow(2, 63));
-console.log(val.buffer); // <Buffer 80 00 00 00 00 00 00 00>
-console.log(val - 0); // 9223372036854776000
-```
+Int64BE constructor accepts a number.
 
 ```js
 var Int64BE = require("int64-buffer").Int64BE;
 
-var val = new Int64BE(-1);
-console.log(val.buffer); // <Buffer ff ff ff ff ff ff ff ff>
-console.log(val - 0); // -1
+var big = new Int64BE(-1);
+
+console.log(big - 0); // -1
 ```
 
+UInt64BE constructor accepts a positive number.
+
 ```js
-var val = new Uint64BE([0,0,0,0,0,0,0,1]);
-console.log(val - 0); // 1
-console.log(val.buffer);
+var UInt64BE = require("int64-buffer").UInt64BE;
+
+var big = new UInt64BE(Math.pow(2, 63));
+
+console.log(big - 0); // 9223372036854776000
+```
+
+They also accept a string representation for bigger number.
+
+```js
+var big = UInt64BE("12345678901234567890");
+
+console.log(big.toString(10)); // "12345678901234567890"
+```
+
+The both constructors also accept an Array or Array-like object with 8 elements.
+
+```js
+var big = new UInt64BE([0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF]);
+
+console.log(big.toString(16)); // "123456789abcdef"
+console.log(big.toBuffer()); // <Buffer 01 23 45 67 89 ab cd ef>
+console.log(big.toArrayBuffer().byteLength); // 8
+console.log(big.toArray()); // [ 1, 35, 69, 103, 137, 171, 205, 239 ]
 ```
 
 ### The MIT License (MIT)
