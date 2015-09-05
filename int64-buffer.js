@@ -23,7 +23,9 @@ function Int64BE(source) {
 
   function init(that, source) {
     if (!(that instanceof this)) return new this(source);
-    if (source && source.length === 8 && "number" === typeof source[0]) {
+    if ("string" === typeof source) {
+      fromString((that.buffer = new STORAGE(8)), source);
+    } else if (source && source.length === 8 && "number" === typeof source[0]) {
       that.buffer = source;
     } else if (source > 0) {
       writeUint64BE.call((that.buffer = new STORAGE(8)), source); // positinve
@@ -77,6 +79,25 @@ function Int64BE(source) {
     }
     buffer[0] = (buffer[0] & 0x7F) | (sign ^ 0x80);
     return buffer;
+  }
+
+  function fromString(buffer, str) {
+    var pos = 0;
+    var len = str.length;
+    var high = 0;
+    var low = 0;
+    if (str[0] === "-") pos++;
+    var sign = pos;
+    while (pos < len) {
+      var chr = str[pos++] - 0;
+      if (!(chr >= 0)) break;
+      low = low * 10 + chr;
+      high = high * 10 + Math.floor(low / 4294967296);
+      low %= 4294967296;
+    }
+    writeUInt32BE.call(buffer, high, 0);
+    writeUInt32BE.call(buffer, low, 4);
+    if (sign) neg(buffer);
   }
 
   function toString(buffer, radix) {
@@ -136,6 +157,16 @@ function Int64BE(source) {
 
   function readUInt32BE(offset) {
     return (this[offset++] * 16777216) + (this[offset++] << 16) + (this[offset++] << 8) + this[offset];
+  }
+
+  function writeUInt32BE(value, offset) {
+    this[offset + 3] = value & 255;
+    value = value >> 8;
+    this[offset + 2] = value & 255;
+    value = value >> 8;
+    this[offset + 1] = value & 255;
+    value = value >> 8;
+    this[offset] = value & 255;
   }
 
   function writeUint64BE(value) {

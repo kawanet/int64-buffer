@@ -32,6 +32,7 @@ describe("Uint64BE", function() {
     var str = "1";
     while (val < max) {
       assert.equal(Uint64BE(val).toString(10), str);
+      assert.equal(Uint64BE(str).valueOf(), val);
       col = (col + 1) % 10;
       val = val * 10 + col;
       str += col;
@@ -84,6 +85,7 @@ describe("Int64BE", function() {
     var str = "-1";
     while (val > max) {
       assert.equal(Int64BE(val).toString(10), str);
+      assert.equal(Int64BE(str).valueOf(), val);
       col = (col + 1) % 10;
       val = val * 10 - col;
       str += col;
