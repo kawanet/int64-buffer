@@ -151,7 +151,7 @@ describe("UInt64BE(array)", function() {
       var c = new UInt64BE(exp);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
-      assert.equal(c.toString(16), val.toString(16));
+      assert.equal(c.toString(16), toString16(val));
     });
   });
 });
@@ -168,7 +168,7 @@ describe("Int64BE(array)", function() {
       var c = new Int64BE(exp);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
-      assert.equal(c.toString(16), val.toString(16));
+      assert.equal(c.toString(16), toString16(val));
     });
   });
 });
@@ -188,7 +188,7 @@ describe("UInt64BE(high1)", function() {
       var c = new UInt64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
-      assert.equal(c.toString(16), val.toString(16));
+      assert.equal(c.toString(16), toString16(val));
     });
     return val * 256;
   }, 1);
@@ -206,7 +206,7 @@ describe("UInt64BE(high32)", function() {
       var c = new UInt64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
-      assert.equal(c.toString(16), val.toString(16));
+      assert.equal(c.toString(16), toString16(val));
     });
     return val * 256;
   }, 0xFFFFFFFF);
@@ -280,6 +280,17 @@ function toHex(array) {
   return Array.prototype.map.call(array, function(val) {
     return val > 16 ? val.toString(16) : "0" + val.toString(16);
   }).join("");
+}
+
+function toString16(val) {
+  var str = val.toString(16);
+  if (str.indexOf("e+") < 0) return str;
+  // IE8-10 may return "4(e+15)" style of string
+  return Math.floor(val / 0x100000000).toString(16) + lpad((val % 0x100000000).toString(16), 8);
+}
+
+function lpad(str, len) {
+  return "00000000".substr(0, len - str.length) + str;
 }
 
 function assert(value) {
