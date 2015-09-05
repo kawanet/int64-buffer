@@ -2,6 +2,7 @@
 
 /*jshint -W018 */ // Confusing use of '!'.
 /*jshint -W030 */ // Expected an assignment or function call and instead saw an expression.
+/*jshint -W093 */ // Did you mean to return a conditional instead of an assignment?
 
 function Uint64BE(source) {
   return Uint64BE.init(this, source);
@@ -23,17 +24,19 @@ function Int64BE(source) {
   var fromArray = (STORAGE === Array) ? newArray : newStorage;
   var isArray = Array.isArray || _isArray;
   var isBuffer = BUFFER && BUFFER.isBuffer;
+  var BIT32 = 4294967296;
+  var BIT24 = 16777216;
 
   function init(that, source) {
     if (!(that instanceof this)) return new this(source);
     if ("string" === typeof source) {
-      fromString((that.buffer = new STORAGE(8)), source);
+      fromString(initStorage(that), source);
     } else if (source && source.length === 8 && "number" === typeof source[0]) {
       that.buffer = source;
     } else if (source > 0) {
-      writeUint64BE.call((that.buffer = new STORAGE(8)), source); // positinve
+      writeUint64BE.call(initStorage(that), source); // positinve
     } else if (source < 0) {
-      writeInt64BE.call((that.buffer = new STORAGE(8)), source); // negative
+      writeInt64BE.call(initStorage(that), source); // negative
     } else {
       that.buffer = fromArray(ZERO); // zero, NaN and others
     }
@@ -95,8 +98,8 @@ function Int64BE(source) {
       var chr = str[pos++] - 0;
       if (!(chr >= 0)) break;
       low = low * 10 + chr;
-      high = high * 10 + Math.floor(low / 4294967296);
-      low %= 4294967296;
+      high = high * 10 + Math.floor(low / BIT32);
+      low %= BIT32;
     }
     writeUInt32BE.call(buffer, high, 0);
     writeUInt32BE.call(buffer, low, 4);
@@ -134,8 +137,12 @@ function Int64BE(source) {
 
   function toArrayBuffer() {
     var buffer = this.buffer;
-    var bufbuf = buffer && buffer.buffer;
-    return (bufbuf instanceof ArrayBuffer) ? bufbuf : (new UINT8ARRAY(buffer)).buffer;
+    var arrbuf = buffer && buffer.buffer;
+    return (arrbuf instanceof ArrayBuffer) ? arrbuf : (new UINT8ARRAY(buffer)).buffer;
+  }
+
+  function initStorage(that) {
+    return that.buffer = new STORAGE(8);
   }
 
   function newStorage(buffer) {
@@ -147,19 +154,19 @@ function Int64BE(source) {
   }
 
   function readUInt64BE(offset) {
-    var upper = readUInt32BE.call(this, offset);
-    var lower = readUInt32BE.call(this, offset + 4);
-    return upper ? (upper * 4294967296 + lower) : lower;
+    var high = readUInt32BE.call(this, offset);
+    var low = readUInt32BE.call(this, offset + 4);
+    return high ? (high * BIT32 + low) : low;
   }
 
   function readInt64BE(offset) {
-    var upper = readUInt32BE.call(this, offset) | 0; // a trick to get signed
-    var lower = readUInt32BE.call(this, offset + 4);
-    return upper ? (upper * 4294967296 + lower) : lower;
+    var high = readUInt32BE.call(this, offset) | 0; // a trick to get signed
+    var low = readUInt32BE.call(this, offset + 4);
+    return high ? (high * BIT32 + low) : low;
   }
 
   function readUInt32BE(offset) {
-    return (this[offset++] * 16777216) + (this[offset++] << 16) + (this[offset++] << 8) + this[offset];
+    return (this[offset++] * BIT24) + (this[offset++] << 16) + (this[offset++] << 8) + this[offset];
   }
 
   function writeUInt32BE(value, offset) {
