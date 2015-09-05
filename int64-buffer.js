@@ -5,7 +5,10 @@
   exports.Uint64BE = Uint64BE;
   exports.Int64BE = Int64BE;
 
-  var STORAGE = Buffer;
+  var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
+  var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
+
+  var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 
   function Uint64BE(source) {

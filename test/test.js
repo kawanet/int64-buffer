@@ -1,7 +1,6 @@
-#!/usr/bin/env mocha -R spec
+// test.js
 
-var assert = require("assert");
-
+var assert = {equal: equal};
 var UINT64JS = "../int64-buffer";
 var exported = ("undefined" !== typeof window) ? window : require(UINT64JS);
 var Uint64BE = exported.Uint64BE;
@@ -151,4 +150,8 @@ function toHex(array) {
   return Array.prototype.map.call(array, function(val) {
     return val > 16 ? val.toString(16) : "0" + val.toString(16);
   }).join(" ");
+}
+
+function equal(actual, expected) {
+  if (actual != expected) throw new Error(actual + " = " + expected);
 }
