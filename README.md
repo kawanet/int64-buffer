@@ -4,7 +4,7 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/int64-buffer.svg)](https://saucelabs.com/u/int64-buffer)
 
-JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module provides a couple of classes Int64BE and Uint64BE. Both could keep 64 bit long integer and loose no bits.
+JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module provides a couple of classes: Int64BE and Uint64BE. Both could keep 64 bits long integer and loose no bit.
 
 ### Features
 
@@ -14,7 +14,7 @@ JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wik
 - Int8Array or Array object is used per default on Web browsers.
 - No math methods such as add(), sub(), mul(), div() etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master) on node.js-v0.10, v0.12, io.js-v3.3 and [Web browsers](https://saucelabs.com/u/int64-buffer)
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js-v0.10, v0.12, io.js-v3.3 and [Web browsers](https://saucelabs.com/u/int64-buffer).
 
 ### Usage
 
