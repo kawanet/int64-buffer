@@ -1,23 +1,23 @@
 // int64-buffer.js
 
-!function(exports) {
+function Uint64BE(source) {
+  Uint64BE.init(this, source);
+}
 
+function Int64BE(source) {
+  Int64BE.init(this, source);
+}
+
+!function(exports, Uint64BE, Int64BE) {
   exports.Uint64BE = Uint64BE;
   exports.Int64BE = Int64BE;
+  Uint64BE.init = Int64BE.init = init;
 
   var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
   var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
 
   var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
-
-  function Uint64BE(source) {
-    init(this, source);
-  }
-
-  function Int64BE(source) {
-    init(this, source);
-  }
 
   function init(that, source) {
     if (source && source.length === 8 && "number" === typeof source[0]) {
@@ -27,8 +27,12 @@
     } else if (source < 0) {
       writeInt64BE((that.buffer = new STORAGE(8)), source); // negative
     } else {
-      that.buffer = new STORAGE(ZERO); // zero, NaN and others
+      that.buffer = toStorage(ZERO); // zero, NaN and others
     }
+  }
+
+  function toStorage(buffer) {
+    return (STORAGE === Array) ? Array.prototype.slice.call(buffer, 0, 8) : new STORAGE(buffer);
   }
 
   Uint64BE.prototype.valueOf = function() {
@@ -62,4 +66,4 @@
     }
   }
 
-}(this);
+}(this || {}, Uint64BE, Int64BE);

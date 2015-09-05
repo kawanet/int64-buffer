@@ -1,8 +1,8 @@
 // test.js
 
 var assert = {equal: equal};
-var UINT64JS = "../int64-buffer";
-var exported = ("undefined" !== typeof window) ? window : require(UINT64JS);
+
+var exported = ("undefined" !== typeof require) ? require("../int64-buffer") : window;
 var Uint64BE = exported.Uint64BE;
 var Int64BE = exported.Int64BE;
 var reduce = Array.prototype.reduce;
