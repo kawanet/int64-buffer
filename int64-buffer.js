@@ -50,6 +50,10 @@ function Int64BE(source) {
     Uint64BE_prototype.toBuffer = Int64BE_prototype.toBuffer = toBuffer;
   }
 
+  if (UINT8ARRAY) {
+    Uint64BE_prototype.toArrayBuffer = Int64BE_prototype.toArrayBuffer = toArrayBuffer;
+  }
+
   function toArray() {
     var buffer = this.buffer;
     return isArray(buffer) ? buffer : newArray(buffer);
@@ -57,7 +61,13 @@ function Int64BE(source) {
 
   function toBuffer() {
     var buffer = this.buffer;
-    return (isBuffer && isBuffer(buffer)) ? buffer : new BUFFER(buffer);
+    return isBuffer(buffer) ? buffer : new BUFFER(buffer);
+  }
+
+  function toArrayBuffer() {
+    var buffer = this.buffer;
+    var bufbuf = buffer && buffer.buffer;
+    return (bufbuf && (bufbuf instanceof ArrayBuffer)) ? bufbuf : (new UINT8ARRAY(buffer)).buffer;
   }
 
   function newStorage(buffer) {

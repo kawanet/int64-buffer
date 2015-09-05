@@ -9,11 +9,13 @@ var Int64BE = exported.Int64BE;
 var reduce = Array.prototype.reduce;
 var forEach = Array.prototype.forEach;
 var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
+var ARRAYBUFFER = ("undefined" !== typeof ArrayBuffer) && ArrayBuffer;
 
 var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
 var ONE = [0, 0, 0, 0, 0, 0, 0, 1];
 
-it.skipBuffer = BUFFER ? it : it.skip;
+var itBuffer = BUFFER ? it : it.skip;
+var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
 
 describe("Uint64BE", function() {
   it("Uint64BE().toArray()", function() {
@@ -22,9 +24,14 @@ describe("Uint64BE", function() {
     assert.ok(c.toArray() instanceof Array);
   });
 
-  it.skipBuffer("Uint64BE().toBuffer()", function() {
+  itBuffer("Uint64BE().toBuffer()", function() {
     var c = Uint64BE();
     assert.ok(BUFFER.isBuffer(c.toBuffer()));
+  });
+
+  itArrayBuffer("Uint64BE().toArrayBuffer()", function() {
+    var c = Uint64BE();
+    assert.ok(c.toArrayBuffer() instanceof ArrayBuffer);
   });
 });
 
@@ -35,9 +42,14 @@ describe("Int64BE", function() {
     assert.ok(c.toArray() instanceof Array);
   });
 
-  it.skipBuffer("Int64BE().toBuffer()", function() {
+  itBuffer("Int64BE().toBuffer()", function() {
     var c = Int64BE();
     assert.ok(BUFFER.isBuffer(c.toBuffer()));
+  });
+
+  itArrayBuffer("Int64BE().toArrayBuffer()", function() {
+    var c = Int64BE();
+    assert.ok(c.toArrayBuffer() instanceof ArrayBuffer);
   });
 });
 
