@@ -49,6 +49,9 @@ var Uint64BE, Int64BE;
       fromArray(buffer, offset, value, raddix | 0);
     } else if ("string" === typeof value) {
       fromString(buffer, offset, value, raddix || 10);
+    } else if ("number" === typeof raddix) {
+      writeUInt32BE(buffer, offset, value); // high
+      writeUInt32BE(buffer, offset + 4, raddix); // low
     } else if (value > 0) {
       fromPositive(buffer, offset, value); // positive
     } else if (value < 0) {

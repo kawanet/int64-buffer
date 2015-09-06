@@ -20,7 +20,7 @@ var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
 var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB];
 var FLOAT_MAX = Math.pow(2, 53);
 var CLASS = {Int64BE: Int64BE, Uint64BE: Uint64BE};
-var STORAGES = {Buffer: BUFFER, Uint8Array: Uint8Array, Array: Array};
+var STORAGES = {buffer: BUFFER, uint8array: Uint8Array, array: Array};
 
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
@@ -294,6 +294,10 @@ Object.keys(CLASS).forEach(function(int64Name) {
   var Int64Class = CLASS[int64Name];
   describe(int64Name, function() {
 
+    it(int64Name + "(high,low)", function() {
+      assert.equal(Int64Class(0x12345678, 0x90abcdef).toString(16), "1234567890abcdef");
+    });
+
     it(int64Name + "(string,raddix)", function() {
       assert.equal(Int64Class("1234567890123456").toString(), "1234567890123456");
       assert.equal(Int64Class("1234567890123456", 10).toString(10), "1234567890123456");
@@ -304,7 +308,7 @@ Object.keys(CLASS).forEach(function(int64Name) {
       var StorageClass = STORAGES[storageName];
       var itSkip = StorageClass ? it : it.skip;
 
-      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset)", function() {
+      itSkip(int64Name + "(" + storageName + ",offset)", function() {
         var buffer = new StorageClass(24);
         for (var i = 0; i < 24; i++) {
           buffer[i] = i;
@@ -327,7 +331,7 @@ Object.keys(CLASS).forEach(function(int64Name) {
         }
       });
 
-      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,value)", function() {
+      itSkip(int64Name + "(" + storageName + ",offset,value)", function() {
         var buffer = new StorageClass(24);
         var val = new Int64Class(buffer, 8, 1234567890);
         assert.equal(val.toNumber(), 1234567890);
@@ -337,7 +341,15 @@ Object.keys(CLASS).forEach(function(int64Name) {
         assert.equal(buffer[15], 1234567890 & 255);
       });
 
-      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,string,raddix)", function() {
+      it(int64Name + "(" + storageName + ",offset,high,low)", function() {
+        var buffer = new StorageClass(24);
+        var val = new Int64Class(buffer, 8, 0x12345678, 0x90abcdef);
+        assert.equal(val.toString(16), "1234567890abcdef");
+        assert.equal(buffer[8], 0x12);
+        assert.equal(buffer[15], 0xef);
+      });
+
+      itSkip(int64Name + "(" + storageName + ",offset,string,raddix)", function() {
         var buffer = new StorageClass(24);
         var val = new Int64Class(buffer, 8, "1234567890", 16);
         assert.equal(val.toNumber(), 0x1234567890);
