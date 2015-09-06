@@ -9,14 +9,14 @@ var Uint64BE, Int64BE;
 !function(exports) {
   // constructors
 
-  var U = exports.Uint64BE = Uint64BE = function(buffer, offset, source) {
-    if (!(this instanceof Uint64BE)) return new Uint64BE(buffer, offset, source);
-    return init(this, buffer, offset, source);
+  var U = exports.Uint64BE = Uint64BE = function(buffer, offset, value, raddix) {
+    if (!(this instanceof Uint64BE)) return new Uint64BE(buffer, offset, value, raddix);
+    return init(this, buffer, offset, value, raddix);
   };
 
-  var I = exports.Int64BE = Int64BE = function(buffer, offset, source) {
-    if (!(this instanceof Int64BE)) return new Int64BE(buffer, offset, source);
-    return init(this, buffer, offset, source);
+  var I = exports.Int64BE = Int64BE = function(buffer, offset, value, raddix) {
+    if (!(this instanceof Int64BE)) return new Int64BE(buffer, offset, value, raddix);
+    return init(this, buffer, offset, value, raddix);
   };
 
   // constants
@@ -33,19 +33,22 @@ var Uint64BE, Int64BE;
 
   // initializer
 
-  function init(that, buffer, offset, value) {
-    that.offset = offset = offset | 0;
+  function init(that, buffer, offset, value, raddix) {
     if (isStorage(buffer, offset)) {
       that.buffer = buffer;
+      that.offset = offset = offset | 0;
       if (UNDEFIND === typeof value) return;
+      setValue(buffer, offset, value, raddix);
     } else {
-      value = buffer;
-      that.buffer = buffer = new STORAGE(offset + 8);
+      setValue((that.buffer = new STORAGE(8)), 0, buffer, offset);
     }
+  }
+
+  function setValue(buffer, offset, value, raddix) {
     if (isStorage(value, offset)) {
-      fromArray(buffer, offset, value, 0);
+      fromArray(buffer, offset, value, raddix | 0);
     } else if ("string" === typeof value) {
-      fromString(buffer, offset, value);
+      fromString(buffer, offset, value, raddix || 10);
     } else if (value > 0) {
       fromPositive(buffer, offset, value); // positive
     } else if (value < 0) {
@@ -158,7 +161,7 @@ var Uint64BE, Int64BE;
     return buffer;
   }
 
-  function fromString(buffer, offset, str) {
+  function fromString(buffer, offset, str, raddix) {
     var pos = 0;
     var len = str.length;
     var high = 0;
@@ -166,10 +169,10 @@ var Uint64BE, Int64BE;
     if (str[0] === "-") pos++;
     var sign = pos;
     while (pos < len) {
-      var chr = str[pos++] - 0;
-      if (!(chr >= 0)) break;
-      low = low * 10 + chr;
-      high = high * 10 + Math.floor(low / BIT32);
+      var chr = parseInt(str[pos++], raddix);
+      if (!(chr >= 0)) break; // NaN
+      low = low * raddix + chr;
+      high = high * raddix + Math.floor(low / BIT32);
       low %= BIT32;
     }
     writeUInt32BE(buffer, offset, high);

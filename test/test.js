@@ -17,6 +17,7 @@ var POS1 = [0, 0, 0, 0, 0, 0, 0, 1];
 var NEG1 = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
 var POSB = [0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF];
 var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
+var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB];
 var FLOAT_MAX = Math.pow(2, 53);
 var CLASS = {Int64BE: Int64BE, Uint64BE: Uint64BE};
 var STORAGES = {Buffer: BUFFER, Uint8Array: Uint8Array, Array: Array};
@@ -62,7 +63,7 @@ describe("Uint64BE", function() {
   });
 
   it("Uint64BE().toJSON()", function() {
-    [POS1, POSB, NEG1, NEGB].forEach(function(array) {
+    SAMPLES.forEach(function(array) {
       var c = Uint64BE(array);
       assert.equal(c.toJSON(), c.toString(10));
     });
@@ -85,20 +86,6 @@ describe("Uint64BE", function() {
     assert.ok(val instanceof ArrayBuffer);
     assert.equal(val.byteLength, 8);
     assert.equal(toHex(new Uint8Array(val)), toHex(POS1));
-  });
-
-  it("Uint64BE(string).toString()", function() {
-    var col = 1;
-    var val = 1;
-    var str = "1";
-    while (val < FLOAT_MAX) {
-      assert.equal(Uint64BE(str) - 0, val);
-      col = (col + 1) % 10;
-      val = val * 10 + col;
-      str += col;
-    }
-    assert.equal(toHex(Uint64BE(Uint64BE(POSB).toString(10)).buffer), toHex(POSB));
-    assert.equal(toHex(Uint64BE(Uint64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 });
 
@@ -140,7 +127,7 @@ describe("Int64BE", function() {
   });
 
   it("Int64BE().toJSON()", function() {
-    [POS1, POSB, NEG1, NEGB].forEach(function(array) {
+    SAMPLES.forEach(function(array) {
       var c = Int64BE(array);
       assert.equal(c.toJSON(), c.toString(10));
     });
@@ -163,20 +150,6 @@ describe("Int64BE", function() {
     assert.ok(val instanceof ArrayBuffer);
     assert.equal(val.byteLength, 8);
     assert.equal(toHex(new Uint8Array(val)), toHex(NEG1));
-  });
-
-  it("Int64BE(string).toString()", function() {
-    var col = 1;
-    var val = -1;
-    var str = "-1";
-    while (val > FLOAT_MAX) {
-      assert.equal(Int64BE(str) - 0, val);
-      col = (col + 1) % 10;
-      val = val * 10 - col;
-      str += col;
-    }
-    assert.equal(toHex(Int64BE(Int64BE(POSB).toString(10)).buffer), toHex(POSB));
-    assert.equal(toHex(Int64BE(Int64BE(NEGB).toString(10)).buffer), toHex(NEGB));
   });
 });
 
@@ -320,9 +293,17 @@ describe("Int64BE(1)", function() {
 Object.keys(CLASS).forEach(function(int64Name) {
   var Int64Class = CLASS[int64Name];
   describe(int64Name, function() {
+
+    it(int64Name + "(string,raddix)", function() {
+      assert.equal(Int64Class("1234567890123456").toString(), "1234567890123456");
+      assert.equal(Int64Class("1234567890123456", 10).toString(10), "1234567890123456");
+      assert.equal(Int64Class("1234567890abcdef", 16).toString(16), "1234567890abcdef");
+    });
+
     Object.keys(STORAGES).forEach(function(storageName) {
       var StorageClass = STORAGES[storageName];
       var itSkip = StorageClass ? it : it.skip;
+
       itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset)", function() {
         var buffer = new StorageClass(24);
         for (var i = 0; i < 24; i++) {
@@ -348,28 +329,22 @@ Object.keys(CLASS).forEach(function(int64Name) {
 
       itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,value)", function() {
         var buffer = new StorageClass(24);
-        var val = new Int64Class(buffer, 8, 0x1234567890);
-        assert.equal(val.toNumber(), 0x1234567890);
-        assert.equal(val.toString(16), "1234567890");
-        assert.equal(val.toJSON(), (0x1234567890).toString());
-        assert.equal(buffer[8], 0);
-        assert.equal(buffer[9], 0);
-        assert.equal(buffer[10], 0);
-        assert.equal(buffer[11], 0x12);
-        assert.equal(buffer[12], 0x34);
-        assert.equal(buffer[13], 0x56);
-        assert.equal(buffer[14], 0x78);
-        assert.equal(buffer[15], 0x90);
-      });
-
-      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,string)", function() {
-        var buffer = new StorageClass(24);
-        var val = new Int64Class(buffer, 8, "1234567890");
+        var val = new Int64Class(buffer, 8, 1234567890);
         assert.equal(val.toNumber(), 1234567890);
         assert.equal(val.toString(), "1234567890");
         assert.equal(val.toJSON(), "1234567890");
         assert.equal(buffer[8], 0);
-        assert.equal(buffer[15], 1234567890 & 0xFF);
+        assert.equal(buffer[15], 1234567890 & 255);
+      });
+
+      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,string,raddix)", function() {
+        var buffer = new StorageClass(24);
+        var val = new Int64Class(buffer, 8, "1234567890", 16);
+        assert.equal(val.toNumber(), 0x1234567890);
+        assert.equal(val.toString(16), "1234567890");
+        assert.equal(val.toJSON(), (0x1234567890).toString());
+        assert.equal(buffer[8], 0);
+        assert.equal(buffer[15], 0x1234567890 & 255);
       });
     });
   });
