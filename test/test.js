@@ -329,22 +329,47 @@ Object.keys(CLASS).forEach(function(int64Name) {
           buffer[i] = i;
         }
         var val = new Int64Class(buffer, 8);
-        assert.equal(Math.round(val.toNumber() / 0x1000000), 0x08090A0B0C); // higher 48bits
+        assert.equal(Math.round(val.toNumber() / 0x1000000), 0x08090A0B0C); // check only higher 48bits
         assert.equal(val.toString(16), "8090a0b0c0d0e0f");
-        assert.equal(val.toJSON(), "579005069656919567");
-        var array = val.toArray();
-        assert.equal(toHex(array), "08090a0b0c0d0e0f");
-        assert.ok(array instanceof Array);
+        var out = val.toArray();
+        assert.equal(toHex(out), "08090a0b0c0d0e0f");
+        assert.ok(out instanceof Array);
         if (BUFFER) {
-          var buffer = val.toBuffer();
-          assert.equal(toHex(buffer), "08090a0b0c0d0e0f");
-          assert.ok(BUFFER.isBuffer(buffer));
+          out = val.toBuffer();
+          assert.equal(toHex(out), "08090a0b0c0d0e0f");
+          assert.ok(BUFFER.isBuffer(out));
         }
         if (UINT8ARRAY) {
-          var arraybuffer = val.toArrayBuffer();
-          assert.equal(toHex(new Uint8Array(arraybuffer)), "08090a0b0c0d0e0f");
-          assert.ok(arraybuffer instanceof ArrayBuffer);
+          out = val.toArrayBuffer();
+          assert.equal(toHex(new Uint8Array(out)), "08090a0b0c0d0e0f");
+          assert.ok(out instanceof ArrayBuffer);
         }
+      });
+
+      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,value)", function() {
+        var buffer = new StorageClass(24);
+        var val = new Int64Class(buffer, 8, 0x1234567890);
+        assert.equal(val.toNumber(), 0x1234567890);
+        assert.equal(val.toString(16), "1234567890");
+        assert.equal(val.toJSON(), (0x1234567890).toString());
+        assert.equal(buffer[8], 0);
+        assert.equal(buffer[9], 0);
+        assert.equal(buffer[10], 0);
+        assert.equal(buffer[11], 0x12);
+        assert.equal(buffer[12], 0x34);
+        assert.equal(buffer[13], 0x56);
+        assert.equal(buffer[14], 0x78);
+        assert.equal(buffer[15], 0x90);
+      });
+
+      itSkip(int64Name + "(" + storageName.toLowerCase() + ",offset,string)", function() {
+        var buffer = new StorageClass(24);
+        var val = new Int64Class(buffer, 8, "1234567890");
+        assert.equal(val.toNumber(), 1234567890);
+        assert.equal(val.toString(), "1234567890");
+        assert.equal(val.toJSON(), "1234567890");
+        assert.equal(buffer[8], 0);
+        assert.equal(buffer[15], 1234567890 & 0xFF);
       });
     });
   });
