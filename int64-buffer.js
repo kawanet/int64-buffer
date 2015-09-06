@@ -24,6 +24,7 @@ var Uint64BE, Int64BE;
   var UNDEFIND = "undefined";
   var BUFFER = (UNDEFIND !== typeof Buffer) && Buffer;
   var UINT8ARRAY = (UNDEFIND !== typeof Uint8Array) && Uint8Array;
+  var ARRAYBUFFER = (UNDEFIND !== typeof ArrayBuffer) && ArrayBuffer;
   var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
   var isArray = Array.isArray || _isArray;
@@ -34,6 +35,10 @@ var Uint64BE, Int64BE;
   // initializer
 
   function init(that, buffer, offset, value, raddix) {
+    if (UINT8ARRAY && ARRAYBUFFER) {
+      if (buffer instanceof ARRAYBUFFER) buffer = new UINT8ARRAY(buffer);
+      if (value instanceof ARRAYBUFFER) value = new UINT8ARRAY(value);
+    }
     if (isStorage(buffer, offset)) {
       that.buffer = buffer;
       that.offset = offset = offset | 0;
@@ -110,7 +115,8 @@ var Uint64BE, Int64BE;
     UPROTO.toArrayBuffer = IPROTO.toArrayBuffer = function(raw) {
       var buffer = this.buffer;
       var offset = this.offset;
-      if (raw !== false && offset === 0 && buffer.length === 8 && hasArrayBuffer(buffer)) return buffer.buffer;
+      var arrbuf = buffer.buffer;
+      if (raw !== false && offset === 0 && (arrbuf instanceof ARRAYBUFFER) && arrbuf.byteLength === 8) return arrbuf;
       var dest = new UINT8ARRAY(8);
       fromArray(dest, 0, buffer, offset);
       return dest.buffer;
@@ -138,10 +144,6 @@ var Uint64BE, Int64BE;
   function isStorage(buffer, offset) {
     var len = buffer && buffer.length;
     return len && (offset + 8 <= len) && ("string" !== typeof buffer[offset]);
-  }
-
-  function hasArrayBuffer(buffer) {
-    return buffer.buffer instanceof ArrayBuffer;
   }
 
   function fromArray(destbuf, destoff, srcbuf, srcoff) {

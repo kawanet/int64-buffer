@@ -74,6 +74,14 @@ var big = new Uint64BE(buffer);
 console.log(big.toString(16)); // "102030405060708"
 ```
 
+- new Uint64BE(uint8array)
+
+```js
+var uint8array = new Uint8Array([1,2,3,4,5,6,7,8]);
+var big = new Uint64BE(uint8array);
+console.log(big.toString(16)); // "102030405060708"
+```
+
 - new Uint64BE(arraybuffer)
 
 ```js

@@ -20,7 +20,7 @@ var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
 var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB];
 var FLOAT_MAX = Math.pow(2, 53);
 var CLASS = {Int64BE: Int64BE, Uint64BE: Uint64BE};
-var STORAGES = {buffer: BUFFER, uint8array: Uint8Array, array: Array};
+var STORAGES = {buffer: BUFFER, uint8array: UINT8ARRAY, arraybuffer: ARRAYBUFFER, array: Array};
 
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
@@ -310,8 +310,10 @@ Object.keys(CLASS).forEach(function(int64Name) {
 
       itSkip(int64Name + "(" + storageName + ",offset)", function() {
         var buffer = new StorageClass(24);
+        var raw = buffer;
+        if (isArrayBuffer(buffer)) buffer = (raw = new Uint8Array(buffer)).buffer;
         for (var i = 0; i < 24; i++) {
-          buffer[i] = i;
+          raw[i] = i;
         }
         var val = new Int64Class(buffer, 8);
         assert.equal(Math.round(val.toNumber() / 0x1000000), 0x08090A0B0C); // check only higher 48bits
@@ -337,14 +339,16 @@ Object.keys(CLASS).forEach(function(int64Name) {
         assert.equal(val.toNumber(), 1234567890);
         assert.equal(val.toString(), "1234567890");
         assert.equal(val.toJSON(), "1234567890");
+        if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
         assert.equal(buffer[8], 0);
         assert.equal(buffer[15], 1234567890 & 255);
       });
 
-      it(int64Name + "(" + storageName + ",offset,high,low)", function() {
+      itSkip(int64Name + "(" + storageName + ",offset,high,low)", function() {
         var buffer = new StorageClass(24);
         var val = new Int64Class(buffer, 8, 0x12345678, 0x90abcdef);
         assert.equal(val.toString(16), "1234567890abcdef");
+        if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
         assert.equal(buffer[8], 0x12);
         assert.equal(buffer[15], 0xef);
       });
@@ -355,12 +359,17 @@ Object.keys(CLASS).forEach(function(int64Name) {
         assert.equal(val.toNumber(), 0x1234567890);
         assert.equal(val.toString(16), "1234567890");
         assert.equal(val.toJSON(), (0x1234567890).toString());
+        if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
         assert.equal(buffer[8], 0);
         assert.equal(buffer[15], 0x1234567890 & 255);
       });
     });
   });
 });
+
+function isArrayBuffer(buffer) {
+  return (ARRAYBUFFER && buffer instanceof ArrayBuffer);
+}
 
 function toHex(array) {
   return Array.prototype.map.call(array, function(val) {
