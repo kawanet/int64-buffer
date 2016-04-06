@@ -1,4 +1,4 @@
-// test.js
+#!/usr/bin/env mocha -R spec
 
 assert.equal = equal;
 assert.ok = assert;
@@ -17,7 +17,9 @@ var POS1 = [0, 0, 0, 0, 0, 0, 0, 1];
 var NEG1 = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
 var POSB = [0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF];
 var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
-var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB];
+var POS7 = [0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
+var NEG8 = [0x80, 0, 0, 0, 0, 0, 0, 0];
+var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB, POS7, NEG8];
 var FLOAT_MAX = Math.pow(2, 53);
 var CLASS = {Int64BE: Int64BE, Uint64BE: Uint64BE};
 var STORAGES = {buffer: BUFFER, uint8array: UINT8ARRAY, arraybuffer: ARRAYBUFFER, array: Array};
@@ -174,7 +176,12 @@ describe("Int64BE(array)", function() {
   forEach.call([
     [0x0000000000000000, 0, 0, 0, 0, 0, 0, 0, 0], // 0
     [0x0000000000000001, 0, 0, 0, 0, 0, 0, 0, 1], // 1
+    [0x00000000FFFFFFFF, 0, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF],
+    [-0x00000000FFFFFFFF, 0xFF, 0xFF, 0xFF, 0xFF, 0, 0, 0, 1],
     [0x4000000000000000, 0x40, 0, 0, 0, 0, 0, 0, 0],
+    [-0x4000000000000000, 0xC0, 0, 0, 0, 0, 0, 0, 0],
+    [0x7FFFFFFF00000000, 0x7F, 0xFF, 0xFF, 0xFF, 0, 0, 0, 0],
+    [-0x7FFFFFFF00000000, 0x80, 0, 0, 1, 0, 0, 0, 0],
     [-1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
   ], function(exp) {
     var val = exp.shift();
@@ -262,7 +269,6 @@ describe("Int64BE(low31)", function() {
     return (val * 256) + 255;
   }, -2147483648);
 });
-
 
 describe("Int64BE(0)", function() {
   forEach.call([
