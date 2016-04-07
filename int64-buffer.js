@@ -158,12 +158,16 @@ var Uint64BE, Int64BE;
     var p = 1;
     var z = 0;
     var sign = buffer[offset] & 0x80;
+    buffer[offset] &= 0x7F;
     for (var i = offset + 7; i >= offset; i--) {
       var q = (buffer[i] ^ 255) + p;
       p = (q > 255) ? 1 : 0;
       z |= (buffer[i] = (p ? 0 : q));
     }
-    if (z) buffer[offset] = (buffer[offset] & 0x7F) | (sign ^ 0x80);
+    buffer[offset] &= 0x7F;
+    // 0 never goes negative: -0 = 0
+    // INT64_MIN never goes positive: -INT64_MIN = (INT64_MAX+1) = INT64_MIN
+    if (!z ^ !sign) buffer[offset] |= 0x80;
   }
 
   function fromString(buffer, offset, str, raddix) {

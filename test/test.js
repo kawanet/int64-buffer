@@ -382,7 +382,27 @@ Object.keys(CLASS).forEach(function(int64Name) {
   });
 });
 
+describe("Uint64BE(string)", function() {
+  // rount-trip by string
+  it("Uint64BE(''+Uint64BE())", function() {
+    SAMPLES.forEach(function(array) {
+      var c = "" + Uint64BE(array);
+      var d = "" + Uint64BE(c);
+      assert.equal(d, c);
+    });
+  });
+});
+
 describe("Int64BE(string)", function() {
+  // rount-trip by string
+  it("Int64BE(''+Int64BE())", function() {
+    SAMPLES.forEach(function(array) {
+      var c = "" + Int64BE(array);
+      var d = "" + Int64BE(c);
+      assert.equal(d, c);
+    });
+  });
+
   // round-trip with negative value
   it("Int64BE('-'+Int64BE())", function() {
     SAMPLES.forEach(function(array) {
