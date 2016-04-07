@@ -17,9 +17,10 @@ var POS1 = [0, 0, 0, 0, 0, 0, 0, 1];
 var NEG1 = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
 var POSB = [0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF];
 var NEGB = [0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10];
-var POS7 = [0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-var NEG8 = [0x80, 0, 0, 0, 0, 0, 0, 0];
-var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB, POS7, NEG8];
+var POS7 = [0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]; // INT64_MAX
+var NEG7 = [0x80, 0, 0, 0, 0, 0, 0, 1]; // -INT64_MAX
+var NEG8 = [0x80, 0, 0, 0, 0, 0, 0, 0]; // INT64_MIN
+var SAMPLES = [ZERO, POS1, NEG1, POSB, NEGB, POS7, NEG7, NEG8];
 var FLOAT_MAX = Math.pow(2, 53);
 var CLASS = {Int64BE: Int64BE, Uint64BE: Uint64BE};
 var STORAGES = {buffer: BUFFER, uint8array: UINT8ARRAY, arraybuffer: ARRAYBUFFER, array: Array};
@@ -377,6 +378,20 @@ Object.keys(CLASS).forEach(function(int64Name) {
         assert.equal(buffer[8], 0);
         assert.equal(buffer[15], 0x1234567890 & 255);
       });
+    });
+  });
+});
+
+describe("Int64BE(string)", function() {
+  // round-trip with negative value
+  it("Int64BE('-'+Int64BE())", function() {
+    SAMPLES.forEach(function(array) {
+      if (array === NEG8) return; // skip -INT64_MIN overflow
+      var c = "" + Int64BE(array);
+      var d = (c === "0") ? c : (c[0] === "-") ? c.substr(1) : "-" + c;
+      var e = "" + Int64BE(d);
+      var f = (e === "0") ? e : (e[0] === "-") ? e.substr(1) : "-" + e;
+      assert.equal(f, c);
     });
   });
 });
