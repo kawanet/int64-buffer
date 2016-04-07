@@ -28,6 +28,7 @@ var Uint64BE, Int64BE;
   var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
   var isArray = Array.isArray || _isArray;
+  var _toString = Object.prototype.toString;
   var isBuffer = BUFFER && BUFFER.isBuffer;
   var BIT32 = 4294967296;
   var BIT24 = 16777216;
@@ -237,8 +238,9 @@ var Uint64BE, Int64BE;
     }
   }
 
-  function _isArray(array) {
-    return array instanceof Array;
+  // https://github.com/retrofox/is-array
+  function _isArray(val) {
+    return !!val && '[object Array]' == _toString.call(val);
   }
 
 }(this || {});
