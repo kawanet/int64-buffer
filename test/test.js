@@ -167,6 +167,7 @@ describe("Uint64BE(array)", function() {
       var c = new Uint64BE(exp);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
+      assert.equal(c.toNumber(), val);
       assert.equal(c.toString(16), toString16(val));
     });
   });
@@ -189,6 +190,7 @@ describe("Int64BE(array)", function() {
       var c = new Int64BE(exp);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
+      assert.equal(c.toNumber(), val);
       assert.equal(c.toString(16), toString16(val));
     });
   });
@@ -209,6 +211,7 @@ describe("Uint64BE(high1)", function() {
       var c = new Uint64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
+      assert.equal(c.toNumber(), val);
       assert.equal(c.toString(16), toString16(val));
     });
     return val * 256;
@@ -227,6 +230,7 @@ describe("Uint64BE(high32)", function() {
       var c = new Uint64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
+      assert.equal(c.toNumber(), val);
       assert.equal(c.toString(16), toString16(val));
     });
     return val * 256;
@@ -248,6 +252,7 @@ describe("Int64BE(low1)", function() {
       var c = new Int64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
+      assert.equal(c.toNumber(), val);
     });
     return (val * 256) + 255;
   }, -2);
@@ -265,6 +270,7 @@ describe("Int64BE(low31)", function() {
       var c = new Int64BE(val);
       assert.equal(toHex(c.buffer), toHex(exp));
       assert.equal(c - 0, val);
+      assert.equal(c.toNumber(), val);
     });
     return (val * 256) + 255;
   }, -2147483648);
@@ -279,6 +285,7 @@ describe("Int64BE(0)", function() {
       var c = new Uint64BE(val);
       assert.equal(toHex(c.buffer), toHex(ZERO));
       assert.equal(c - 0, 0);
+      assert.equal(c.toNumber(), 0);
     });
   });
 });
@@ -292,6 +299,7 @@ describe("Int64BE(1)", function() {
       var c = new Uint64BE(val);
       assert.equal(toHex(c.buffer), toHex(POS1));
       assert.equal(c - 0, 1);
+      assert.equal(c.toNumber(), 1);
     });
   });
 });
