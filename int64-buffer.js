@@ -127,7 +127,7 @@ var Uint64BE, Int64BE;
     var buffer = this.buffer;
     var offset = this.offset;
     var sign = (buffer[offset] & 0x80) ? "-" : "";
-    if (sign) buffer = neg(newArray(buffer, offset), 0);
+    if (sign) neg(buffer = newArray(buffer, offset), 0);
     return sign + toString(buffer, offset, radix);
   };
 
@@ -156,14 +156,14 @@ var Uint64BE, Int64BE;
 
   function neg(buffer, offset) {
     var p = 1;
+    var z = 0;
     var sign = buffer[offset] & 0x80;
-    for (var i = offset + 8; i >= offset; i--) {
+    for (var i = offset + 7; i >= offset; i--) {
       var q = (buffer[i] ^ 255) + p;
       p = (q > 255) ? 1 : 0;
-      buffer[i] = p ? 0 : q;
+      z |= (buffer[i] = (p ? 0 : q));
     }
-    buffer[offset] = (buffer[offset] & 0x7F) | (sign ^ 0x80);
-    return buffer;
+    if (z) buffer[offset] = (buffer[offset] & 0x7F) | (sign ^ 0x80);
   }
 
   function fromString(buffer, offset, str, raddix) {

@@ -279,7 +279,7 @@ describe("Int64BE(low31)", function() {
 
 describe("Int64BE(0)", function() {
   forEach.call([
-    0, 0.5, "0", NaN, Infinity, void 0, null
+    0, 0.5, "0", "-0", NaN, Infinity, void 0, null
   ], function(val) {
     var view = ("string" === typeof val) ? '"' + val + '"' : val;
     it(toHex(ZERO) + " = " + view, function() {
