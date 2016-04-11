@@ -35,6 +35,10 @@ var Uint64BE, Int64BE;
   var BIT32 = 4294967296;
   var BIT24 = 16777216;
 
+  // storage class
+
+  var storage; // Array;
+
   // initializer
 
   function init(that, buffer, offset, value, raddix) {
@@ -44,7 +48,7 @@ var Uint64BE, Int64BE;
     }
 
     // Int64BE() style
-    if (!buffer && !offset && !value && !that.storage) {
+    if (!buffer && !offset && !value && !storage) {
       // shortcut to initialize with zero
       that.buffer = newArray(ZERO, 0);
       return;
@@ -52,11 +56,11 @@ var Uint64BE, Int64BE;
 
     // Int64BE(value, raddix) style
     if (!isValidBuffer(buffer, offset)) {
-      var storage = that.storage || Array;
+      var _storage = storage || Array;
       raddix = offset;
       value = buffer;
       offset = 0;
-      buffer = new storage(8);
+      buffer = new _storage(8);
     }
 
     that.buffer = buffer;
@@ -81,9 +85,6 @@ var Uint64BE, Int64BE;
       fromArray(buffer, offset, ZERO, 0); // zero, NaN and others
     }
   }
-
-  // default internal storage class: Array
-  UPROTO.storage = IPROTO.storage = void 0;
 
   UPROTO.buffer = IPROTO.buffer = void 0;
 
@@ -118,6 +119,7 @@ var Uint64BE, Int64BE;
   UPROTO.toArray = IPROTO.toArray = function(raw) {
     var buffer = this.buffer;
     var offset = this.offset;
+    storage = null; // Array
     if (raw !== false && offset === 0 && buffer.length === 8 && isArray(buffer)) return buffer;
     return newArray(buffer, offset);
   };
@@ -128,8 +130,9 @@ var Uint64BE, Int64BE;
     UPROTO.toBuffer = IPROTO.toBuffer = function(raw) {
       var buffer = this.buffer;
       var offset = this.offset;
+      storage = BUFFER;
       if (raw !== false && offset === 0 && buffer.length === 8 && Buffer.isBuffer(buffer)) return buffer;
-      var dest = new Buffer(8);
+      var dest = new BUFFER(8);
       fromArray(dest, 0, buffer, offset);
       return dest;
     };
@@ -142,6 +145,7 @@ var Uint64BE, Int64BE;
       var buffer = this.buffer;
       var offset = this.offset;
       var arrbuf = buffer.buffer;
+      storage = UINT8ARRAY;
       if (raw !== false && offset === 0 && (arrbuf instanceof ARRAYBUFFER) && arrbuf.byteLength === 8) return arrbuf;
       var dest = new UINT8ARRAY(8);
       fromArray(dest, 0, buffer, offset);
