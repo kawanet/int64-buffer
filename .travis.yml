@@ -8,7 +8,7 @@ matrix:
     - node_js: "0.12"
     - node_js: "3"
     - node_js: "4"
-    - node_js: "0.12"
+    - node_js: "4"
       env: BROWSER=1
 
 env:
