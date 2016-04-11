@@ -5,8 +5,9 @@ TESTS=./test/*.js
 HINTS=$(SRC) $(TESTS)
 DIST=./dist
 JSDEST=./dist/int64-buffer.min.js
+JSGZIP=./dist/int64-buffer.min.js.gz
 
-all: test $(JSDEST)
+all: test $(JSGZIP)
 
 clean:
 	rm -fr $(JSDEST)
@@ -17,6 +18,10 @@ $(DIST):
 $(JSDEST): $(SRC) $(DIST)
 	./node_modules/.bin/uglifyjs $(SRC) -c -m -o $(JSDEST)
 	ls -l $(JSDEST)
+
+$(JSGZIP): $(JSDEST)
+	gzip -9 < $(JSDEST) > $(JSGZIP)
+	ls -l $(JSDEST) $(JSGZIP)
 
 test:
 	@if [ "x$(BROWSER)" = "x" ]; then make test-node; else make test-browser; fi
