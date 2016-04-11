@@ -1,6 +1,6 @@
 # int64-buffer
 
-64bit Long Integer on Buffer/ArrayBuffer in Pure JavaScript 
+64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript
 
 [![npm version](https://badge.fury.io/js/int64-buffer.svg)](http://badge.fury.io/js/int64-buffer) [![Build Status](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master)](https://travis-ci.org/kawanet/int64-buffer)
 
@@ -11,13 +11,11 @@ JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wik
 ### Features
 
 - Int64 for signed 64bit long integer and Uint64 for unsigned.
-- Big endian representation in 8 bytes internal buffer.
-- Buffer object is used per default on Node.js.
-- Int8Array or plain Array is used per default on Web browsers.
+- Big endian representation in 8 bytes internal Array-like buffer.
 - No mathematical methods such as add(), sub(), mul(), div() etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
-- Small. Less than 3KB minified, 1KB gzipped.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js-v0.10, v0.12, io.js-v3.3 and [Web browsers](https://saucelabs.com/u/int64-buffer).
+- Small. 3KB minified. No module dependencies. Portable pure JavaScript.
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js-v0.10, v0.12, v3, v4 and [Web browsers](https://saucelabs.com/u/int64-buffer).
 
 ### Usage
 
@@ -29,6 +27,8 @@ var Int64BE = require("int64-buffer").Int64BE;
 var big = new Int64BE(-1);
 
 console.log(big - 0); // -1
+
+console.log(big.toBuffer()); // <Buffer ff ff ff ff ff ff ff ff>
 ```
 
 Uint64BE is the class to host a positive unsigned 64bit long integer.
@@ -40,7 +40,7 @@ var big = new Uint64BE(Math.pow(2, 63)); // a big number with 64 bits
 
 console.log(big - 0); // 9223372036854776000 = IEEE-754 loses last bits
 
-console.log(big + ""); // "9223372036854775808" = correct
+console.log(big + ""); // "9223372036854775808" = perfectly correct
 ```
 
 ### Input Constructor
@@ -118,7 +118,7 @@ console.log(buffer[15].toString(16)); // "90"
 - new Uint64BE(buffer, offset, high, low)
 
 ```js
-var buffer = new Buffer(16);
+var buffer = new Uint8Array(16);
 var big = new Uint64BE(buffer, 8, 0x12345678, 0x9abcdef0);
 console.log(big.toString(16)); // "123456789abcdef0"
 console.log(buffer[15].toString(16)); // "f0"
@@ -127,7 +127,7 @@ console.log(buffer[15].toString(16)); // "f0"
 - new Uint64BE(buffer, offset, string, radix)
 
 ```js
-var buffer = new Buffer(16);
+var buffer = new Array(16);
 var big = new Uint64BE(buffer, 8, "123456789abcdef0", 16);
 console.log(big.toString(16)); // "123456789abcdef0"
 console.log(buffer[15].toString(16)); // "f0"
@@ -215,7 +215,7 @@ npm install int64-buffer --save
 
 ### The MIT License (MIT)
 
-Copyright (c) 2015 Yusuke Kawasaki
+Copyright (c) 2015-2016 Yusuke Kawasaki
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

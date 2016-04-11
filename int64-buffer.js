@@ -19,17 +19,19 @@ var Uint64BE, Int64BE;
     return init(this, buffer, offset, value, raddix);
   };
 
+  // member methods
+
+  var UPROTO = U.prototype;
+  var IPROTO = I.prototype;
+
   // constants
 
   var UNDEFIND = "undefined";
   var BUFFER = (UNDEFIND !== typeof Buffer) && Buffer;
   var UINT8ARRAY = (UNDEFIND !== typeof Uint8Array) && Uint8Array;
   var ARRAYBUFFER = (UNDEFIND !== typeof ArrayBuffer) && ArrayBuffer;
-  var STORAGE = BUFFER || UINT8ARRAY || Array;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
   var isArray = Array.isArray || _isArray;
-  var _toString = Object.prototype.toString;
-  var isBuffer = BUFFER && BUFFER.isBuffer;
   var BIT32 = 4294967296;
   var BIT24 = 16777216;
 
@@ -40,21 +42,34 @@ var Uint64BE, Int64BE;
       if (buffer instanceof ARRAYBUFFER) buffer = new UINT8ARRAY(buffer);
       if (value instanceof ARRAYBUFFER) value = new UINT8ARRAY(value);
     }
-    if (isStorage(buffer, offset)) {
-      that.buffer = buffer;
-      that.offset = offset = offset | 0;
-      if (UNDEFIND === typeof value) return;
-      setValue(buffer, offset, value, raddix);
-    } else {
-      setValue((that.buffer = new STORAGE(8)), 0, buffer, offset);
-    }
-  }
 
-  function setValue(buffer, offset, value, raddix) {
-    if (isStorage(value, offset)) {
-      fromArray(buffer, offset, value, raddix | 0);
-    } else if ("string" === typeof value) {
+    // Int64BE() style
+    if (!buffer && !offset && !value && !that.storage) {
+      // shortcut to initialize with zero
+      that.buffer = newArray(ZERO, 0);
+      return;
+    }
+
+    // Int64BE(value, raddix) style
+    if (!isValidBuffer(buffer, offset)) {
+      var storage = that.storage || Array;
+      raddix = offset;
+      value = buffer;
+      offset = 0;
+      buffer = new storage(8);
+    }
+
+    that.buffer = buffer;
+    that.offset = offset |= 0;
+
+    // Int64BE(buffer, offset) style
+    if ("undefined" === typeof value) return;
+
+    // Int64BE(buffer, offset, value, raddix) style
+    if ("string" === typeof value) {
       fromString(buffer, offset, value, raddix || 10);
+    } else if (isValidBuffer(value, raddix)) {
+      fromArray(buffer, offset, value, raddix);
     } else if ("number" === typeof raddix) {
       writeUInt32BE(buffer, offset, value); // high
       writeUInt32BE(buffer, offset + 4, raddix); // low
@@ -67,16 +82,22 @@ var Uint64BE, Int64BE;
     }
   }
 
-  // member methods
-
-  var UPROTO = U.prototype;
-  var IPROTO = I.prototype;
+  // default internal storage class: Array
+  UPROTO.storage = IPROTO.storage = void 0;
 
   UPROTO.buffer = IPROTO.buffer = void 0;
 
   UPROTO.offset = IPROTO.offset = 0;
 
-  UPROTO.fragment = IPROTO.fragment = false;
+  UPROTO._isUint64BE = IPROTO._isInt64BE = true;
+
+  U.isUint64BE = function(b) {
+    return !!(b && b._isUint64BE);
+  };
+
+  I.isInt64BE = function(b) {
+    return !!(b && b._isInt64BE);
+  };
 
   UPROTO.toNumber = function() {
     var buffer = this.buffer;
@@ -101,16 +122,20 @@ var Uint64BE, Int64BE;
     return newArray(buffer, offset);
   };
 
+  // add .toBuffer() method only when Buffer available
+
   if (BUFFER) {
     UPROTO.toBuffer = IPROTO.toBuffer = function(raw) {
       var buffer = this.buffer;
       var offset = this.offset;
-      if (raw !== false && offset === 0 && buffer.length === 8 && isBuffer(buffer)) return buffer;
-      var dest = new BUFFER(8);
+      if (raw !== false && offset === 0 && buffer.length === 8 && Buffer.isBuffer(buffer)) return buffer;
+      var dest = new Buffer(8);
       fromArray(dest, 0, buffer, offset);
       return dest;
     };
   }
+
+  // add .toArrayBuffer() method only when Uint8Array available
 
   if (UINT8ARRAY) {
     UPROTO.toArrayBuffer = IPROTO.toArrayBuffer = function(raw) {
@@ -127,9 +152,11 @@ var Uint64BE, Int64BE;
   IPROTO.toString = function(radix) {
     var buffer = this.buffer;
     var offset = this.offset;
-    var sign = (buffer[offset] & 0x80) ? "-" : "";
+    var sign = buffer[offset] & 0x80;
     if (sign) neg(buffer = newArray(buffer, offset), 0);
-    return sign + toString(buffer, offset, radix);
+    var str = toString(buffer, offset, radix);
+    if (sign) str = "-" + str;
+    return str;
   };
 
   UPROTO.toString = function(radix) {
@@ -142,8 +169,9 @@ var Uint64BE, Int64BE;
 
   // private methods
 
-  function isStorage(buffer, offset) {
+  function isValidBuffer(buffer, offset) {
     var len = buffer && buffer.length;
+    offset |= 0;
     return len && (offset + 8 <= len) && ("string" !== typeof buffer[offset]);
   }
 
@@ -240,7 +268,7 @@ var Uint64BE, Int64BE;
 
   // https://github.com/retrofox/is-array
   function _isArray(val) {
-    return !!val && '[object Array]' == _toString.call(val);
+    return !!val && "[object Array]" == Object.prototype.toString.call(val);
   }
 
 }(this || {});
