@@ -10,16 +10,16 @@ JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wik
 
 ### Features
 
-- Int64 for signed 64bit long integer and Uint64 for unsigned.
-- Big endian representation in 8 bytes internal Array-like buffer.
-- No mathematical methods such as add(), sub(), mul(), div() etc.
+- `Int64BE` class for signed 64bit long integer and `Uint64BE` class for unsigned.
+- Big endian representation in 8 bytes length internal Array-like buffer.
+- No mathematical methods provided, such as add(), sub(), mul(), div() etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
-- Small. 3KB minified. No module dependencies. Portable pure JavaScript.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js-v0.10, v0.12, v3, v4 and [Web browsers](https://saucelabs.com/u/int64-buffer).
+- Small. 3KB minified. No other module required. Portable pure JavaScript.
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v0.10, v0.12, v3, v4 and [Web browsers](https://saucelabs.com/u/int64-buffer).
 
 ### Usage
 
-Int64BE is the class to host a 64bit long integer.
+`Int64BE` is the class to host a 64bit long integer, int64.
 
 ```js
 var Int64BE = require("int64-buffer").Int64BE;
@@ -31,7 +31,7 @@ console.log(big - 0); // -1
 console.log(big.toBuffer()); // <Buffer ff ff ff ff ff ff ff ff>
 ```
 
-Uint64BE is the class to host a positive unsigned 64bit long integer.
+`Uint64BE` is the class to host a positive unsigned 64bit long integer, uint64.
 
 ```js
 var Uint64BE = require("int64-buffer").Uint64BE;
@@ -156,6 +156,13 @@ var big = Uint64BE();
 console.log(JSON.stringify({big: big})); // {"big":"1234567890"} as string
 ```
 
+- toNumber()
+
+```js
+var big = Uint64BE(1234567890);
+console.log(big.toNumber()); // 1234567890
+```
+
 - toString(radix)
 
 ```js
@@ -175,7 +182,8 @@ console.log(big.toBuffer()); // <Buffer 01 02 03 04 05 06 07 08>
 
 ```js
 var big = Uint64BE(0);
-console.log(big.toArrayBuffer().byteLength); // 8
+var buf = new Int8Array(big.toArrayBuffer());
+console.log(buf); // Int8Array { '0': 1, '1': 2, '2': 3, '3': 4, '4': 5, '5': 6, '6': 7, '7': 8 }
 ```
 
 - toArray()
