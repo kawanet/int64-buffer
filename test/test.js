@@ -139,6 +139,13 @@ describe("Int64BE", function() {
     assert.equal(Int64BE("1234567890abcdef", 16).toString(16), "1234567890abcdef");
   });
 
+  it("Int64BE(array,offset)", function() {
+    var buf = [].concat(NEG1, NEG1);
+    var val = Int64BE(buf, 4, -2);
+    assert.equal(val.toString(16), "-2");
+    assert.equal(val.toNumber(), -2);
+  });
+
   it("Int64BE().toNumber()", function() {
     var val = Int64BE(-1).toNumber();
     assert.ok("number" === typeof val);

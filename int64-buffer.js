@@ -157,9 +157,15 @@ var Uint64BE, Int64BE;
     var buffer = this.buffer;
     var offset = this.offset;
     var sign = buffer[offset] & 0x80;
-    if (sign) neg(buffer = newArray(buffer, offset), 0);
+    if (sign) {
+      buffer = newArray(buffer, offset);
+      offset = 0;
+      neg(buffer, offset);
+    }
     var str = toString(buffer, offset, radix);
-    if (sign) str = "-" + str;
+    if (sign) {
+      str = "-" + str;
+    }
     return str;
   };
 
