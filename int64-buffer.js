@@ -154,23 +154,11 @@ var Uint64BE, Int64BE;
   }
 
   IPROTO.toString = function(radix) {
-    var buffer = this.buffer;
-    var offset = this.offset;
-    var sign = buffer[offset] & 0x80;
-    if (sign) {
-      buffer = newArray(buffer, offset);
-      offset = 0;
-      neg(buffer, offset);
-    }
-    var str = toString(buffer, offset, radix);
-    if (sign) {
-      str = "-" + str;
-    }
-    return str;
+    return toString(this.buffer, this.offset, radix, true);
   };
 
   UPROTO.toString = function(radix) {
-    return toString(this.buffer, this.offset, radix);
+    return toString(this.buffer, this.offset, radix, false);
   };
 
   UPROTO.toJSON = UPROTO.toNumber;
@@ -220,10 +208,15 @@ var Uint64BE, Int64BE;
     if (sign) neg(buffer, offset);
   }
 
-  function toString(buffer, offset, radix) {
+  function toString(buffer, offset, radix, signed) {
     var str = "";
     var high = readUInt32BE(buffer, offset);
     var low = readUInt32BE(buffer, offset + 4);
+    var sign = signed && (high & 0x80000000);
+    if (sign) {
+      high = ~high;
+      low = BIT32 - low;
+    }
     radix = radix || 10;
     while (1) {
       var mod = (high % radix) * BIT32 + low;
@@ -231,6 +224,9 @@ var Uint64BE, Int64BE;
       low = Math.floor(mod / radix);
       str = (mod % radix).toString(radix) + str;
       if (!high && !low) break;
+    }
+    if (sign) {
+      str = "-" + str;
     }
     return str;
   }
