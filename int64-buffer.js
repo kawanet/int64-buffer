@@ -180,15 +180,6 @@ var Uint64BE, Int64BE;
     }
   }
 
-  function neg(buffer, offset) {
-    var p = 1;
-    for (var i = offset + 7; i >= offset; i--) {
-      var q = (buffer[i] ^ 255) + p;
-      p = (q > 255) ? 1 : 0;
-      buffer[i] = p ? 0 : q;
-    }
-  }
-
   function fromString(buffer, offset, str, raddix) {
     var pos = 0;
     var len = str.length;
@@ -203,9 +194,16 @@ var Uint64BE, Int64BE;
       high = high * raddix + Math.floor(low / BIT32);
       low %= BIT32;
     }
+    if (sign) {
+      high = ~high;
+      if (low) {
+        low = BIT32 - low;
+      } else {
+        high++;
+      }
+    }
     writeUInt32BE(buffer, offset, high);
     writeUInt32BE(buffer, offset + 4, low);
-    if (sign) neg(buffer, offset);
   }
 
   function toString(buffer, offset, radix, signed) {
