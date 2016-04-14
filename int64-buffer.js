@@ -173,9 +173,8 @@ var Uint64BE, Int64BE;
     return toString(this.buffer, this.offset, radix);
   };
 
-  UPROTO.toJSON = IPROTO.toJSON = function() {
-    return this.toString(10);
-  };
+  UPROTO.toJSON = UPROTO.toNumber;
+  IPROTO.toJSON = IPROTO.toNumber;
 
   // private methods
 

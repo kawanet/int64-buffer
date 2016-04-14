@@ -153,7 +153,7 @@ console.log(big + ""); // "1234567890"
 
 ```js
 var big = Uint64BE();
-console.log(JSON.stringify({big: big})); // {"big":"1234567890"} as string
+console.log(JSON.stringify({big: big})); // {"big":1234567890}
 ```
 
 - toNumber()
