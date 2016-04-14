@@ -15,7 +15,7 @@ JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wik
 - No mathematical methods provided, such as add(), sub(), mul(), div() etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
 - Small. 3KB minified. No other module required. Portable pure JavaScript.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v0.10, v0.12, v3, v4 and [Web browsers](https://saucelabs.com/u/int64-buffer).
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v0.10, v0.12, v4, v5 and [Web browsers](https://saucelabs.com/u/int64-buffer).
 
 ### Usage
 
