@@ -1,7 +1,7 @@
 #!/usr/bin/env bash -c make
 
 SRC=./int64-buffer.js
-TESTS=./test/*.js
+TESTS=*.json ./test/*.js
 HINTS=$(SRC) $(TESTS)
 DIST=./dist
 JSDEST=./dist/int64-buffer.min.js
@@ -17,7 +17,6 @@ $(DIST):
 
 $(JSDEST): $(SRC) $(DIST)
 	./node_modules/.bin/uglifyjs $(SRC) -c -m -o $(JSDEST)
-	ls -l $(JSDEST)
 
 $(JSGZIP): $(JSDEST)
 	gzip -9 < $(JSDEST) > $(JSGZIP)
