@@ -267,4 +267,4 @@ var Uint64BE, Int64BE;
     return !!val && "[object Array]" == Object.prototype.toString.call(val);
   }
 
-}(this || {});
+}(typeof exports === 'object' && typeof exports.nodeName !== 'string' ? exports : (this || {}));
