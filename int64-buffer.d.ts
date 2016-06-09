@@ -1,15 +1,20 @@
 // TypeScript type definitions
 declare abstract class Int64 
 {
+	type ArrayType = Uint8Array | ArrayBuffer | number[];
+
 	constructor(value?: number);
 	constructor(high: number, low: number);
 	constructor(value: string, radix?: number);
-	constructor(array: Uint8Array);
-	constructor(array: ArrayBuffer);
-	constructor(array: number[]);
-	constructor(buf: Buffer, offset?: number, value?: number);
+	constructor(buf: Buffer);
+	constructor(buf: Buffer, offset: number, value?: number);
 	constructor(buf: Buffer, offset: number, high: number, low: number);
 	constructor(buf: Buffer, offset: number, value: string, radix?: number);
+	constructor(array: ArrayType);
+	constructor(array: ArrayType, offset: number, value?: number);
+	constructor(array: ArrayType, offset: number, high: number, low: number);
+	constructor(array: ArrayType, offset: number, value: string, radix?: number);
+
 	toNumber(): number;
 	toJSON(): number;
 	toString(radix?: number): string;
