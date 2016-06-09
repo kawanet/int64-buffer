@@ -40,6 +40,7 @@
   ],
   "license": "MIT",
   "main": "int64-buffer.js",
+  "typings": "int64-buffer.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kawanet/int64-buffer.git"
