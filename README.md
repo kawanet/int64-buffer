@@ -195,11 +195,11 @@ console.log(big.toArray()); // [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 
 ### Browsers Build
 
-[int64-buffer.min.js](https://rawgithub.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js) is [tested](https://saucelabs.com/u/int64-buffer) on modern Web browsers as well as legends of IE8.
+[int64-buffer.min.js](https://rawgit.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js) is [tested](https://saucelabs.com/u/int64-buffer) on modern Web browsers as well as legends of IE8.
 
 ```html
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script src="https://rawgithub.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js"></script>
+<script src="https://rawgit.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js"></script>
 <script>
 
   var i = Int64BE("1234567890123456789");
