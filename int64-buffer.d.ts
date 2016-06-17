@@ -1,8 +1,9 @@
 // TypeScript type definitions
+
+type ArrayType = Uint8Array | ArrayBuffer | number[];
+
 declare abstract class Int64 
 {
-	type ArrayType = Uint8Array | ArrayBuffer | number[];
-
 	constructor(value?: number);
 	constructor(high: number, low: number);
 	constructor(value: string, radix?: number);
