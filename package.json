@@ -1,11 +1,16 @@
 {
   "name": "int64-buffer",
   "description": "64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "@kawanet",
   "bugs": {
     "url": "https://github.com/kawanet/int64-buffer/issues"
   },
+  "contributors": [
+    "kawanet <u-suke@kawa.net>",
+    "pizza2code <christopher.guinnup@jhuapl.edu>",
+    "Jan Krems <jan.krems@groupon.com>"
+  ],
   "devDependencies": {
     "jshint": "^2.9.2",
     "mocha": "^2.5.3",
