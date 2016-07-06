@@ -7,29 +7,12 @@
 var Uint64BE, Int64BE;
 
 !function(exports) {
-  // constructors
-
-  var U = exports.Uint64BE = Uint64BE = function(buffer, offset, value, raddix) {
-    if (!(this instanceof Uint64BE)) return new Uint64BE(buffer, offset, value, raddix);
-    return init(this, buffer, offset, value, raddix);
-  };
-
-  var I = exports.Int64BE = Int64BE = function(buffer, offset, value, raddix) {
-    if (!(this instanceof Int64BE)) return new Int64BE(buffer, offset, value, raddix);
-    return init(this, buffer, offset, value, raddix);
-  };
-
-  // member methods
-
-  var UPROTO = U.prototype;
-  var IPROTO = I.prototype;
-
   // constants
 
-  var UNDEFIND = "undefined";
-  var BUFFER = (UNDEFIND !== typeof Buffer) && Buffer;
-  var UINT8ARRAY = (UNDEFIND !== typeof Uint8Array) && Uint8Array;
-  var ARRAYBUFFER = (UNDEFIND !== typeof ArrayBuffer) && ArrayBuffer;
+  var UNDEFINED = "undefined";
+  var BUFFER = (UNDEFINED !== typeof Buffer) && Buffer;
+  var UINT8ARRAY = (UNDEFINED !== typeof Uint8Array) && Uint8Array;
+  var ARRAYBUFFER = (UNDEFINED !== typeof ArrayBuffer) && ArrayBuffer;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
   var isArray = Array.isArray || _isArray;
   var BIT32 = 4294967296;
@@ -39,132 +22,212 @@ var Uint64BE, Int64BE;
 
   var storage; // Array;
 
-  // initializer
+  // generate classes
 
-  function init(that, buffer, offset, value, raddix) {
-    if (UINT8ARRAY && ARRAYBUFFER) {
-      if (buffer instanceof ARRAYBUFFER) buffer = new UINT8ARRAY(buffer);
-      if (value instanceof ARRAYBUFFER) value = new UINT8ARRAY(value);
+  Uint64BE = factory("Uint64BE", true, fromPositiveBE, fromNegativeBE);
+  Int64BE = factory("Int64BE", false, fromPositiveBE, fromNegativeBE);
+
+  // class factory
+
+  function factory(name, unsigned, fromPositive, fromNegative) {
+    var isX = "is" + name;
+    var _isX = "_" + isX;
+    var posH = 0;
+    var posL = 4;
+    var pos0 = 0;
+    var pos1 = 1;
+    var pos2 = 2;
+    var pos3 = 3;
+    var PROTO = Int64.prototype;
+
+    // properties
+    PROTO.buffer = void 0;
+    PROTO.offset = 0;
+    PROTO[_isX] = true;
+
+    // methods
+    PROTO.toNumber = toNumber;
+    PROTO.toString = toString;
+    PROTO.toJSON = toNumber;
+    PROTO.toArray = toArray;
+
+    // add .toBuffer() method only when Buffer available
+    if (BUFFER) PROTO.toBuffer = toBuffer;
+
+    // add .toArrayBuffer() method only when Uint8Array available
+    if (UINT8ARRAY) PROTO.toArrayBuffer = toArrayBuffer;
+
+    // isUint64BE, isInt64BE
+    Int64[isX] = isInt64;
+
+    // export
+    exports[name] = Int64;
+
+    return Int64;
+
+    // constructor
+    function Int64(buffer, offset, value, raddix) {
+      if (!(this instanceof Int64)) return new Int64(buffer, offset, value, raddix);
+      return init(this, buffer, offset, value, raddix);
     }
 
-    // Int64BE() style
-    if (!buffer && !offset && !value && !storage) {
-      // shortcut to initialize with zero
-      that.buffer = newArray(ZERO, 0);
-      return;
+    // isUint64BE, isInt64BE
+    function isInt64(b) {
+      return !!(b && b[_isX]);
     }
 
-    // Int64BE(value, raddix) style
-    if (!isValidBuffer(buffer, offset)) {
-      var _storage = storage || Array;
-      raddix = offset;
-      value = buffer;
-      offset = 0;
-      buffer = new _storage(8);
+    // initializer
+    function init(that, buffer, offset, value, raddix) {
+      if (UINT8ARRAY && ARRAYBUFFER) {
+        if (buffer instanceof ARRAYBUFFER) buffer = new UINT8ARRAY(buffer);
+        if (value instanceof ARRAYBUFFER) value = new UINT8ARRAY(value);
+      }
+
+      // Int64BE() style
+      if (!buffer && !offset && !value && !storage) {
+        // shortcut to initialize with zero
+        that.buffer = newArray(ZERO, 0);
+        return;
+      }
+
+      // Int64BE(value, raddix) style
+      if (!isValidBuffer(buffer, offset)) {
+        var _storage = storage || Array;
+        raddix = offset;
+        value = buffer;
+        offset = 0;
+        buffer = new _storage(8);
+      }
+
+      that.buffer = buffer;
+      that.offset = offset |= 0;
+
+      // Int64BE(buffer, offset) style
+      if (UNDEFINED === typeof value) return;
+
+      // Int64BE(buffer, offset, value, raddix) style
+      if ("string" === typeof value) {
+        fromString(buffer, offset, value, raddix || 10);
+      } else if (isValidBuffer(value, raddix)) {
+        fromArray(buffer, offset, value, raddix);
+      } else if ("number" === typeof raddix) {
+        writeInt32(buffer, offset + posH, value); // high
+        writeInt32(buffer, offset + posL, raddix); // low
+      } else if (value > 0) {
+        fromPositive(buffer, offset, value); // positive
+      } else if (value < 0) {
+        fromNegative(buffer, offset, value); // negative
+      } else {
+        fromArray(buffer, offset, ZERO, 0); // zero, NaN and others
+      }
     }
 
-    that.buffer = buffer;
-    that.offset = offset |= 0;
+    function fromString(buffer, offset, str, raddix) {
+      var pos = 0;
+      var len = str.length;
+      var high = 0;
+      var low = 0;
+      if (str[0] === "-") pos++;
+      var sign = pos;
+      while (pos < len) {
+        var chr = parseInt(str[pos++], raddix);
+        if (!(chr >= 0)) break; // NaN
+        low = low * raddix + chr;
+        high = high * raddix + Math.floor(low / BIT32);
+        low %= BIT32;
+      }
+      if (sign) {
+        high = ~high;
+        if (low) {
+          low = BIT32 - low;
+        } else {
+          high++;
+        }
+      }
+      writeInt32(buffer, offset + posH, high);
+      writeInt32(buffer, offset + posL, low);
+    }
 
-    // Int64BE(buffer, offset) style
-    if ("undefined" === typeof value) return;
+    function toNumber() {
+      var buffer = this.buffer;
+      var offset = this.offset;
+      var high = readInt32(buffer, offset + posH);
+      var low = readInt32(buffer, offset + posL);
+      if (!unsigned) high |= 0; // a trick to get signed
+      return high ? (high * BIT32 + low) : low;
+    }
 
-    // Int64BE(buffer, offset, value, raddix) style
-    if ("string" === typeof value) {
-      fromString(buffer, offset, value, raddix || 10);
-    } else if (isValidBuffer(value, raddix)) {
-      fromArray(buffer, offset, value, raddix);
-    } else if ("number" === typeof raddix) {
-      writeUInt32BE(buffer, offset, value); // high
-      writeUInt32BE(buffer, offset + 4, raddix); // low
-    } else if (value > 0) {
-      fromPositive(buffer, offset, value); // positive
-    } else if (value < 0) {
-      fromNegative(buffer, offset, value); // negative
-    } else {
-      fromArray(buffer, offset, ZERO, 0); // zero, NaN and others
+    function toString(radix) {
+      var buffer = this.buffer;
+      var offset = this.offset;
+      var high = readInt32(buffer, offset + posH);
+      var low = readInt32(buffer, offset + posL);
+      var str = "";
+      var sign = !unsigned && (high & 0x80000000);
+      if (sign) {
+        high = ~high;
+        low = BIT32 - low;
+      }
+      radix = radix || 10;
+      while (1) {
+        var mod = (high % radix) * BIT32 + low;
+        high = Math.floor(high / radix);
+        low = Math.floor(mod / radix);
+        str = (mod % radix).toString(radix) + str;
+        if (!high && !low) break;
+      }
+      if (sign) {
+        str = "-" + str;
+      }
+      return str;
+    }
+
+    function writeInt32(buffer, offset, value) {
+      buffer[offset + pos3] = value & 255;
+      value = value >> 8;
+      buffer[offset + pos2] = value & 255;
+      value = value >> 8;
+      buffer[offset + pos1] = value & 255;
+      value = value >> 8;
+      buffer[offset + pos0] = value & 255;
+    }
+
+    function readInt32(buffer, offset) {
+      return (buffer[offset + pos0] * BIT24) +
+        (buffer[offset + pos1] << 16) +
+        (buffer[offset + pos2] << 8) +
+        buffer[offset + pos3];
     }
   }
 
-  UPROTO.buffer = IPROTO.buffer = void 0;
-
-  UPROTO.offset = IPROTO.offset = 0;
-
-  UPROTO._isUint64BE = IPROTO._isInt64BE = true;
-
-  U.isUint64BE = function(b) {
-    return !!(b && b._isUint64BE);
-  };
-
-  I.isInt64BE = function(b) {
-    return !!(b && b._isInt64BE);
-  };
-
-  UPROTO.toNumber = function() {
-    var buffer = this.buffer;
-    var offset = this.offset;
-    var high = readUInt32BE(buffer, offset);
-    var low = readUInt32BE(buffer, offset + 4);
-    return high ? (high * BIT32 + low) : low;
-  };
-
-  IPROTO.toNumber = function() {
-    var buffer = this.buffer;
-    var offset = this.offset;
-    var high = readUInt32BE(buffer, offset) | 0; // a trick to get signed
-    var low = readUInt32BE(buffer, offset + 4);
-    return high ? (high * BIT32 + low) : low;
-  };
-
-  UPROTO.toArray = IPROTO.toArray = function(raw) {
+  function toArray(raw) {
     var buffer = this.buffer;
     var offset = this.offset;
     storage = null; // Array
     if (raw !== false && offset === 0 && buffer.length === 8 && isArray(buffer)) return buffer;
     return newArray(buffer, offset);
-  };
-
-  // add .toBuffer() method only when Buffer available
-
-  if (BUFFER) {
-    UPROTO.toBuffer = IPROTO.toBuffer = function(raw) {
-      var buffer = this.buffer;
-      var offset = this.offset;
-      storage = BUFFER;
-      if (raw !== false && offset === 0 && buffer.length === 8 && Buffer.isBuffer(buffer)) return buffer;
-      var dest = new BUFFER(8);
-      fromArray(dest, 0, buffer, offset);
-      return dest;
-    };
   }
 
-  // add .toArrayBuffer() method only when Uint8Array available
-
-  if (UINT8ARRAY) {
-    UPROTO.toArrayBuffer = IPROTO.toArrayBuffer = function(raw) {
-      var buffer = this.buffer;
-      var offset = this.offset;
-      var arrbuf = buffer.buffer;
-      storage = UINT8ARRAY;
-      if (raw !== false && offset === 0 && (arrbuf instanceof ARRAYBUFFER) && arrbuf.byteLength === 8) return arrbuf;
-      var dest = new UINT8ARRAY(8);
-      fromArray(dest, 0, buffer, offset);
-      return dest.buffer;
-    };
+  function toBuffer(raw) {
+    var buffer = this.buffer;
+    var offset = this.offset;
+    storage = BUFFER;
+    if (raw !== false && offset === 0 && buffer.length === 8 && Buffer.isBuffer(buffer)) return buffer;
+    var dest = new BUFFER(8);
+    fromArray(dest, 0, buffer, offset);
+    return dest;
   }
 
-  IPROTO.toString = function(radix) {
-    return toString(this.buffer, this.offset, radix, true);
-  };
-
-  UPROTO.toString = function(radix) {
-    return toString(this.buffer, this.offset, radix, false);
-  };
-
-  UPROTO.toJSON = UPROTO.toNumber;
-  IPROTO.toJSON = IPROTO.toNumber;
-
-  // private methods
+  function toArrayBuffer(raw) {
+    var buffer = this.buffer;
+    var offset = this.offset;
+    var arrbuf = buffer.buffer;
+    storage = UINT8ARRAY;
+    if (raw !== false && offset === 0 && (arrbuf instanceof ARRAYBUFFER) && arrbuf.byteLength === 8) return arrbuf;
+    var dest = new UINT8ARRAY(8);
+    fromArray(dest, 0, buffer, offset);
+    return dest.buffer;
+  }
 
   function isValidBuffer(buffer, offset) {
     var len = buffer && buffer.length;
@@ -180,81 +243,18 @@ var Uint64BE, Int64BE;
     }
   }
 
-  function fromString(buffer, offset, str, raddix) {
-    var pos = 0;
-    var len = str.length;
-    var high = 0;
-    var low = 0;
-    if (str[0] === "-") pos++;
-    var sign = pos;
-    while (pos < len) {
-      var chr = parseInt(str[pos++], raddix);
-      if (!(chr >= 0)) break; // NaN
-      low = low * raddix + chr;
-      high = high * raddix + Math.floor(low / BIT32);
-      low %= BIT32;
-    }
-    if (sign) {
-      high = ~high;
-      if (low) {
-        low = BIT32 - low;
-      } else {
-        high++;
-      }
-    }
-    writeUInt32BE(buffer, offset, high);
-    writeUInt32BE(buffer, offset + 4, low);
-  }
-
-  function toString(buffer, offset, radix, signed) {
-    var str = "";
-    var high = readUInt32BE(buffer, offset);
-    var low = readUInt32BE(buffer, offset + 4);
-    var sign = signed && (high & 0x80000000);
-    if (sign) {
-      high = ~high;
-      low = BIT32 - low;
-    }
-    radix = radix || 10;
-    while (1) {
-      var mod = (high % radix) * BIT32 + low;
-      high = Math.floor(high / radix);
-      low = Math.floor(mod / radix);
-      str = (mod % radix).toString(radix) + str;
-      if (!high && !low) break;
-    }
-    if (sign) {
-      str = "-" + str;
-    }
-    return str;
-  }
-
   function newArray(buffer, offset) {
     return Array.prototype.slice.call(buffer, offset, offset + 8);
   }
 
-  function readUInt32BE(buffer, offset) {
-    return (buffer[offset++] * BIT24) + (buffer[offset++] << 16) + (buffer[offset++] << 8) + buffer[offset];
-  }
-
-  function writeUInt32BE(buffer, offset, value) {
-    buffer[offset + 3] = value & 255;
-    value = value >> 8;
-    buffer[offset + 2] = value & 255;
-    value = value >> 8;
-    buffer[offset + 1] = value & 255;
-    value = value >> 8;
-    buffer[offset] = value & 255;
-  }
-
-  function fromPositive(buffer, offset, value) {
+  function fromPositiveBE(buffer, offset, value) {
     for (var i = offset + 7; i >= offset; i--) {
       buffer[i] = value & 255;
       value /= 256;
     }
   }
 
-  function fromNegative(buffer, offset, value) {
+  function fromNegativeBE(buffer, offset, value) {
     value++;
     for (var i = offset + 7; i >= offset; i--) {
       buffer[i] = ((-value) & 255) ^ 255;
