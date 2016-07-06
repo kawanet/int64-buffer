@@ -4,7 +4,7 @@
 /*jshint -W030 */ // Expected an assignment or function call and instead saw an expression.
 /*jshint -W093 */ // Did you mean to return a conditional instead of an assignment?
 
-var Uint64BE, Int64BE;
+var Uint64BE, Int64BE, Uint64LE, Int64LE;
 
 !function(exports) {
   // constants
@@ -24,43 +24,47 @@ var Uint64BE, Int64BE;
 
   // generate classes
 
-  Uint64BE = factory("Uint64BE", true, fromPositiveBE, fromNegativeBE);
-  Int64BE = factory("Int64BE", false, fromPositiveBE, fromNegativeBE);
+  Uint64BE = factory("Uint64BE", true, true);
+  Int64BE = factory("Int64BE", true, false);
+  Uint64LE = factory("Uint64LE", false, true);
+  Int64LE = factory("Int64LE", false, false);
 
   // class factory
 
-  function factory(name, unsigned, fromPositive, fromNegative) {
-    var isX = "is" + name;
-    var _isX = "_" + isX;
-    var posH = 0;
-    var posL = 4;
-    var pos0 = 0;
-    var pos1 = 1;
-    var pos2 = 2;
-    var pos3 = 3;
-    var PROTO = Int64.prototype;
+  function factory(name, bigendian, unsigned) {
+    var posH = bigendian ? 0 : 4;
+    var posL = bigendian ? 4 : 0;
+    var pos0 = bigendian ? 0 : 3;
+    var pos1 = bigendian ? 1 : 2;
+    var pos2 = bigendian ? 2 : 1;
+    var pos3 = bigendian ? 3 : 0;
+    var fromPositive = bigendian ? fromPositiveBE : fromPositiveLE;
+    var fromNegative = bigendian ? fromNegativeBE : fromNegativeLE;
+    var proto = Int64.prototype;
+    var isName = "is" + name;
+    var _isInt64 = "_" + isName;
 
     // properties
-    PROTO.buffer = void 0;
-    PROTO.offset = 0;
-    PROTO[_isX] = true;
+    proto.buffer = void 0;
+    proto.offset = 0;
+    proto[_isInt64] = true;
 
     // methods
-    PROTO.toNumber = toNumber;
-    PROTO.toString = toString;
-    PROTO.toJSON = toNumber;
-    PROTO.toArray = toArray;
+    proto.toNumber = toNumber;
+    proto.toString = toString;
+    proto.toJSON = toNumber;
+    proto.toArray = toArray;
 
     // add .toBuffer() method only when Buffer available
-    if (BUFFER) PROTO.toBuffer = toBuffer;
+    if (BUFFER) proto.toBuffer = toBuffer;
 
     // add .toArrayBuffer() method only when Uint8Array available
-    if (UINT8ARRAY) PROTO.toArrayBuffer = toArrayBuffer;
+    if (UINT8ARRAY) proto.toArrayBuffer = toArrayBuffer;
 
     // isUint64BE, isInt64BE
-    Int64[isX] = isInt64;
+    Int64[isName] = isInt64;
 
-    // export
+    // CommonJS
     exports[name] = Int64;
 
     return Int64;
@@ -73,7 +77,7 @@ var Uint64BE, Int64BE;
 
     // isUint64BE, isInt64BE
     function isInt64(b) {
-      return !!(b && b[_isX]);
+      return !!(b && b[_isInt64]);
     }
 
     // initializer
@@ -248,16 +252,35 @@ var Uint64BE, Int64BE;
   }
 
   function fromPositiveBE(buffer, offset, value) {
-    for (var i = offset + 7; i >= offset; i--) {
-      buffer[i] = value & 255;
+    var pos = offset + 8;
+    while (pos > offset) {
+      buffer[--pos] = value & 255;
       value /= 256;
     }
   }
 
   function fromNegativeBE(buffer, offset, value) {
+    var pos = offset + 8;
     value++;
-    for (var i = offset + 7; i >= offset; i--) {
-      buffer[i] = ((-value) & 255) ^ 255;
+    while (pos > offset) {
+      buffer[--pos] = ((-value) & 255) ^ 255;
+      value /= 256;
+    }
+  }
+
+  function fromPositiveLE(buffer, offset, value) {
+    var end = offset + 8;
+    while (offset < end) {
+      buffer[offset++] = value & 255;
+      value /= 256;
+    }
+  }
+
+  function fromNegativeLE(buffer, offset, value) {
+    var end = offset + 8;
+    value++;
+    while (offset < end) {
+      buffer[offset++] = ((-value) & 255) ^ 255;
       value /= 256;
     }
   }
