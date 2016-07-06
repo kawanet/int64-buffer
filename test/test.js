@@ -363,6 +363,17 @@ function allTests(uint64Name, int64Name) {
   function uintMoreTests() {
     var Uint64Class = exported[uint64Name];
 
+    describe(uint64Name + "(string)", function() {
+      // rount-trip by string
+      it(uint64Name + "(''+" + uint64Name + "())", function() {
+        SAMPLES.forEach(function(array) {
+          var c = "" + Uint64Class(array);
+          var d = "" + Uint64Class(c);
+          assert.equal(d, c);
+        });
+      });
+    });
+    
     describe(uint64Name + "(array)", function() {
       forEach.call([
         [0x0000000000000000, 0, 0, 0, 0, 0, 0, 0, 0], // 0
@@ -427,17 +438,6 @@ function allTests(uint64Name, int64Name) {
         });
         return val * 256;
       }, 0xFFFFFFFF);
-    });
-
-    describe(uint64Name + "(string)", function() {
-      // rount-trip by string
-      it(uint64Name + "(''+Uint64LE())", function() {
-        SAMPLES.forEach(function(array) {
-          var c = "" + Uint64Class(array);
-          var d = "" + Uint64Class(c);
-          assert.equal(d, c);
-        });
-      });
     });
   }
 
@@ -565,7 +565,7 @@ function allTests(uint64Name, int64Name) {
 
     describe(int64Name + "(string)", function() {
       // rount-trip by string
-      it(int64Name + "(''+Int64LE())", function() {
+      it(int64Name + "(''+" + int64Name + "())", function() {
         SAMPLES.forEach(function(array) {
           var c = "" + Int64Class(array);
           var d = "" + Int64Class(c);
@@ -574,7 +574,7 @@ function allTests(uint64Name, int64Name) {
       });
 
       // round-trip with negative value
-      it(int64Name + "('-'+Int64LE())", function() {
+      it(int64Name + "('-'+" + int64Name + "())", function() {
         SAMPLES.forEach(function(array) {
           if (array === NEG8) return; // skip -INT64_MIN overflow
           var c = "" + Int64Class(array);
