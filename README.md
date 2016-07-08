@@ -6,20 +6,22 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/int64-buffer.svg)](https://saucelabs.com/u/int64-buffer)
 
-JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision. This module provides a couple of classes: Int64BE and Uint64BE which could hold 64 bits long integer and loose no bit.
+JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision.
+This module provides two pair of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Uint64LE` which could hold 64 bits long integer and loose no bit.
 
 ### Features
 
-- `Int64BE` class for signed 64bit long integer and `Uint64BE` class for unsigned.
-- Big endian representation in 8 bytes length internal Array-like buffer.
-- No mathematical methods provided, such as add(), sub(), mul(), div() etc.
+- `Int64BE`/`Int64LE` for signed integer, `Uint64BE`/`Uint64LE` for unsigned.
+- `Int64BE`/`Uint64BE` for big-endian, `Uint64BE`/`Uint64LE` for little-endian.
+- `Buffer`/`Uint8Array`/`Array`/`Array`-like storage of 8 bytes length with offset.
+- No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()` etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
-- Small. 3KB minified. No other module required. Portable pure JavaScript.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v0.10, v0.12, v4, v5 and [Web browsers](https://saucelabs.com/u/int64-buffer).
+- Small. 3KB when minified. No other module required. Portable pure JavaScript.
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v0.10, v0.12, v4, v5, v6 and [Web browsers](https://saucelabs.com/u/int64-buffer).
 
 ### Usage
 
-`Int64BE` is the class to host a 64bit long integer, int64.
+`Int64BE` is the class to host a 64 bit signed long integer `int64_t`.
 
 ```js
 var Int64BE = require("int64-buffer").Int64BE;
@@ -31,7 +33,9 @@ console.log(big - 0); // -1
 console.log(big.toBuffer()); // <Buffer ff ff ff ff ff ff ff ff>
 ```
 
-`Uint64BE` is the class to host a positive unsigned 64bit long integer, uint64.
+It uses `Buffer` on Node.js and `Uint8Array` on modern Web browsers.
+
+`Uint64BE` is the class to host a 64 bit unsigned positive long integer `uint64_t`.
 
 ```js
 var Uint64BE = require("int64-buffer").Uint64BE;
@@ -42,6 +46,8 @@ console.log(big - 0); // 9223372036854776000 = IEEE-754 loses last bits
 
 console.log(big + ""); // "9223372036854775808" = perfectly correct
 ```
+
+`Int64LE` and `Uint64LE` works as same as above but with little-endian storage.
 
 ### Input Constructor
 
