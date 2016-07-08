@@ -13,7 +13,7 @@ var forEach = Array.prototype.forEach;
 var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
 var ARRAYBUFFER = ("undefined" !== typeof ArrayBuffer) && ArrayBuffer;
 var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
-var STORAGES = {array: Array, buffer: BUFFER, uint8array: UINT8ARRAY, arraybuffer: ARRAYBUFFER};
+var STORAGES = {array: Array, buffer: BUFFER, uint8array: UINT8ARRAY, arraybuffer: ARRAYBUFFER, arraylike: ArrayLike};
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
 
@@ -350,6 +350,8 @@ function allTests(uint64Name, int64Name) {
         src = new UINT8ARRAY(src);
       } else if (storageName === "arraybuffer") {
         src = (new UINT8ARRAY(src)).buffer;
+      } else if (storageName === "arraylike") {
+        src = new ArrayLike(src);
       }
       var val = Int64Class(buffer, 8, src, 4);
       assert.ok(val.buffer instanceof Array);
@@ -373,7 +375,7 @@ function allTests(uint64Name, int64Name) {
         });
       });
     });
-    
+
     describe(uint64Name + "(array)", function() {
       forEach.call([
         [0x0000000000000000, 0, 0, 0, 0, 0, 0, 0, 0], // 0
@@ -610,6 +612,18 @@ function miscTests() {
       assert.ok(!Int64LE.isInt64LE(Uint64LE()));
     });
   });
+}
+
+function ArrayLike(arg) {
+  if (!(this instanceof ArrayLike)) return new ArrayLike(arg);
+  var i;
+  if (arg && arg.length) {
+    this.length = arg.length;
+    for (i = 0; i < this.length; i++) this[i] = arg[i];
+  } else {
+    this.length = arg;
+    for (i = 0; i < this.length; i++) this[i] = 0;
+  }
 }
 
 function isArrayBuffer(buffer) {
