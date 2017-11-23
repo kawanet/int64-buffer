@@ -17,7 +17,7 @@ This module provides two pair of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Ui
 - No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()` etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
 - Small. 3KB when minified. No other module required. Portable pure JavaScript.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v0.10, v0.12, v4, v5, v6 and [Web browsers](https://saucelabs.com/u/int64-buffer).
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v4, v6, v8 and [Web browsers](https://saucelabs.com/u/int64-buffer).
 
 ### Usage
 
@@ -47,7 +47,7 @@ console.log(big - 0); // 9223372036854776000 = IEEE-754 loses last bits
 console.log(big + ""); // "9223372036854775808" = perfectly correct
 ```
 
-`Int64LE` and `Uint64LE` works as same as above but with little-endian storage.
+`Int64LE` and `Uint64LE` work as same as above but with little-endian storage.
 
 ### Input Constructor
 
@@ -201,7 +201,7 @@ console.log(big.toArray()); // [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 
 ### Browsers Build
 
-[int64-buffer.min.js](https://rawgit.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js) is [tested](https://saucelabs.com/u/int64-buffer) on modern Web browsers as well as legends of IE8.
+[int64-buffer.min.js](https://rawgit.com/kawanet/int64-buffer/master/dist/int64-buffer.min.js) is [tested](https://saucelabs.com/u/int64-buffer) on major Web browsers.
 
 ```html
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
