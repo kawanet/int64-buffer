@@ -12,10 +12,10 @@
     "Jan Krems <jan.krems@groupon.com>"
   ],
   "devDependencies": {
-    "jshint": "^2.9.2",
-    "mocha": "^2.5.3",
-    "uglify-js": "^2.7.0",
-    "zuul": "^3.10.1"
+    "jshint": "^2.9.5",
+    "mocha": "^4.0.1",
+    "uglify-js": "^3.1.10",
+    "zuul": "^3.11.1"
   },
   "homepage": "https://github.com/kawanet/int64-buffer",
   "jshintConfig": {
