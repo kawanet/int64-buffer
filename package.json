@@ -12,6 +12,7 @@
     "Jan Krems <jan.krems@groupon.com>"
   ],
   "devDependencies": {
+    "@types/node": "^8.5.1",
     "jshint": "^2.9.5",
     "mocha": "^4.0.1",
     "uglify-js": "^3.1.10",

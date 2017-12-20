@@ -141,25 +141,11 @@ console.log(buffer[15].toString(16)); // "f0"
 
 ### Output Methods
 
-- Number context
+- valueOf()
 
 ```js
 var big = Uint64BE(1234567890);
 console.log(big - 0); // 1234567890
-```
-
-- String context
-
-```js
-var big = Uint64BE(1234567890);
-console.log(big + ""); // "1234567890"
-```
-
-- JSON context
-
-```js
-var big = Uint64BE();
-console.log(JSON.stringify({big: big})); // {"big":1234567890}
 ```
 
 - toNumber()

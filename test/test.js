@@ -46,12 +46,17 @@ function allTests(uint64Name, int64Name) {
     if (LE) array.reverse();
   });
 
-  uint64BasicTests();
-  int64BasicTests();
-  uintMoreTests();
-  intMoreTests();
-  bufferTest(uint64Name);
-  bufferTest(int64Name);
+  describe(uint64Name, function() {
+    uint64BasicTests();
+    uintMoreTests();
+    bufferTest(uint64Name);
+  });
+
+  describe(int64Name, function() {
+    int64BasicTests();
+    intMoreTests();
+    bufferTest(int64Name);
+  });
 
   function uint64BasicTests() {
     var Uint64Class = exported[uint64Name];
