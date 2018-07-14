@@ -1,7 +1,8 @@
+*.min.js.gz
 *~
+.DS_Store
+.idea
+.nyc_output/
+gh-pages
 node_modules
 npm-debug.log*
-gh-pages
-.idea
-.DS_Store
-*.min.js.gz
