@@ -15,7 +15,7 @@ This module provides two pair of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Ui
 - No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()` etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
 - Small. 3KB when minified. No other module required. Portable pure JavaScript.
-- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v6, v8, v10 and Web browsers.
+- [Tested](https://travis-ci.org/kawanet/int64-buffer) on node.js v4, v6, v8, v10 and Web browsers.
 
 ### Usage
 
@@ -73,7 +73,7 @@ console.log(big.toString(16)); // "123456789abcdef0"
 - new Uint64BE(buffer)
 
 ```js
-var buffer = new Buffer([1,2,3,4,5,6,7,8]);
+var buffer = Buffer.from([1,2,3,4,5,6,7,8]);
 var big = new Uint64BE(buffer);
 console.log(big.toString(16)); // "102030405060708"
 ```
@@ -105,7 +105,7 @@ console.log(big.toString(16)); // "102030405060708"
 - new Uint64BE(buffer, offset)
 
 ```js
-var buffer = new Buffer([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]);
+var buffer = Buffer.from([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]);
 var big = new Uint64BE(buffer, 8);
 console.log(big.toString(16)); // "90a0b0c0d0e0f10"
 ```
@@ -113,7 +113,7 @@ console.log(big.toString(16)); // "90a0b0c0d0e0f10"
 - new Uint64BE(buffer, offset, number)
 
 ```js
-var buffer = new Buffer(16);
+var buffer = Buffer.from(16);
 var big = new Uint64BE(buffer, 8, 0x1234567890);
 console.log(big.toString(16)); // "1234567890"
 console.log(buffer[15].toString(16)); // "90"

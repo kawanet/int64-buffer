@@ -215,8 +215,12 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
   function toBuffer(raw) {
     var buffer = this.buffer;
     var offset = this.offset;
-    storage = BUFFER;
-    if (raw !== false && offset === 0 && buffer.length === 8 && Buffer.isBuffer(buffer)) return buffer;
+
+    // Buffer.from(buffer) added in node v5.10.0
+    var from = BUFFER.from;
+    if (from) return from(toArrayBuffer.call(this, raw));
+
+    // [DEP0005] DeprecationWarning: Buffer() is deprecated
     var dest = new BUFFER(8);
     fromArray(dest, 0, buffer, offset);
     return dest;
