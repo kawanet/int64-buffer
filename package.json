@@ -23,6 +23,7 @@
   "homepage": "https://github.com/kawanet/int64-buffer",
   "jshintConfig": {
     "globals": {
+      "BigInt": true,
       "describe": true,
       "it": true,
       "window": true

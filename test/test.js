@@ -1,5 +1,7 @@
 // #!/usr/bin/env mocha -R spec
 
+/*jshint -W122 */ // Invalid typeof value 'bigint'
+
 assert.equal = equal;
 assert.ok = assert;
 
@@ -13,9 +15,11 @@ var forEach = Array.prototype.forEach;
 var BUFFER = ("undefined" !== typeof Buffer) && Buffer;
 var ARRAYBUFFER = ("undefined" !== typeof ArrayBuffer) && ArrayBuffer;
 var UINT8ARRAY = ("undefined" !== typeof Uint8Array) && Uint8Array;
+var BIGINT = ("undefined" !== typeof BigInt) && BigInt;
 var STORAGES = {array: Array, buffer: BUFFER, uint8array: UINT8ARRAY, arraybuffer: ARRAYBUFFER, arraylike: ArrayLike};
 var itBuffer = BUFFER ? it : it.skip;
 var itArrayBuffer = ARRAYBUFFER ? it : it.skip;
+var itBigInt = BIGINT ? it : it.skip;
 
 allTests("Uint64BE", "Int64BE");
 allTests("Uint64LE", "Int64LE");
@@ -69,6 +73,10 @@ function allTests(uint64Name, int64Name) {
         assert.equal(Uint64Class(123456789) - 0, 123456789);
       });
 
+      itBigInt(uint64Name + "(bigint)", function() {
+        assert.equal(Uint64Class(BigInt(123456789)) - 0, 123456789);
+      });
+
       it(uint64Name + "(high,low)", function() {
         assert.equal(Uint64Class(0x12345678, 0x90abcdef).toString(16), "1234567890abcdef");
         assert.equal(Uint64Class(0x90abcdef, 0x12345678).toString(16), "90abcdef12345678");
@@ -84,6 +92,13 @@ function allTests(uint64Name, int64Name) {
         var val = Uint64Class(1).toNumber();
         assert.ok("number" === typeof val);
         assert.equal(val, 1);
+      });
+
+      itBigInt(uint64Name + "().toBigInt()", function() {
+        var val = Uint64Class(1).toBigInt();
+        assert.ok("bigint" === typeof val);
+        assert.equal(Number(val), 1);
+        assert.equal(val, BigInt(1));
       });
 
       it(uint64Name + "().toString()", function() {
@@ -156,6 +171,10 @@ function allTests(uint64Name, int64Name) {
         assert.equal(Int64Class(-123456789) - 0, -123456789);
       });
 
+      itBigInt(int64Name + "(bignum)", function() {
+        assert.equal(Int64Class(BigInt(-123456789)) - 0, -123456789);
+      });
+
       it(int64Name + "(high,low)", function() {
         assert.equal(Int64Class(0x12345678, 0x90abcdef).toString(16), "1234567890abcdef");
         assert.equal(Int64Class(0xFFFFFFFF, 0xFFFFFFFF) - 0, -1);
@@ -178,6 +197,13 @@ function allTests(uint64Name, int64Name) {
         var val = Int64Class(-1).toNumber();
         assert.ok("number" === typeof val);
         assert.equal(val, -1);
+      });
+
+      itBigInt(int64Name + "().toBigInt()", function() {
+        var val = Int64Class(-1).toBigInt();
+        assert.ok("bigint" === typeof val);
+        assert.equal(Number(val), -1);
+        assert.equal(val, BigInt(-1));
       });
 
       it(int64Name + "().toString()", function() {
@@ -302,6 +328,18 @@ function allTests(uint64Name, int64Name) {
       var buffer = new StorageClass(24);
       var val = new Int64Class(buffer, 8, 1234567890);
       assert.equal(val.toNumber(), 1234567890);
+      assert.equal(val.toString(), "1234567890");
+      assert.equal(val.toJSON(), "1234567890");
+      if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
+      assert.equal(buffer[highpos], 0);
+      assert.equal(buffer[lowpos], 1234567890 & 255);
+    });
+
+    itBigInt(className + "(" + storageName + ",offset,bigint)", function() {
+      var buffer = new StorageClass(24);
+      var val = new Int64Class(buffer, 8, BigInt(1234567890));
+      assert.equal(val.toNumber(), 1234567890);
+      assert.equal(val.toBigInt(), BigInt(1234567890));
       assert.equal(val.toString(), "1234567890");
       assert.equal(val.toJSON(), "1234567890");
       if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);

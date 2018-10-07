@@ -3,6 +3,7 @@
 /*jshint -W018 */ // Confusing use of '!'.
 /*jshint -W030 */ // Expected an assignment or function call and instead saw an expression.
 /*jshint -W093 */ // Did you mean to return a conditional instead of an assignment?
+/*jshint -W122 */ // Invalid typeof value 'bigint'
 
 var Uint64BE, Int64BE, Uint64LE, Int64LE;
 
@@ -13,6 +14,8 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
   var BUFFER = (UNDEFINED !== typeof Buffer) && Buffer;
   var UINT8ARRAY = (UNDEFINED !== typeof Uint8Array) && Uint8Array;
   var ARRAYBUFFER = (UNDEFINED !== typeof ArrayBuffer) && ArrayBuffer;
+  var BIGINT = (UNDEFINED !== typeof BigInt) && BigInt;
+  var DATAVIEW = (UNDEFINED !== typeof DataView) && DataView;
   var ZERO = [0, 0, 0, 0, 0, 0, 0, 0];
   var isArray = Array.isArray || _isArray;
   var BIT32 = 4294967296;
@@ -60,6 +63,9 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
 
     // add .toArrayBuffer() method only when Uint8Array available
     if (UINT8ARRAY) proto.toArrayBuffer = toArrayBuffer;
+
+    // add .toBigInt() method only when both BigInt and DataView available
+    if (BIGINT && DATAVIEW) proto.toBigInt = toBigInt;
 
     // isUint64BE, isInt64BE
     Int64[isName] = isInt64;
@@ -114,6 +120,8 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
         fromString(buffer, offset, value, raddix || 10);
       } else if (isValidBuffer(value, raddix)) {
         fromArray(buffer, offset, value, raddix);
+      } else if ("bigint" === typeof value) {
+        fromBigInt(buffer, offset, value);
       } else if ("number" === typeof raddix) {
         writeInt32(buffer, offset + posH, value); // high
         writeInt32(buffer, offset + posL, raddix); // low
@@ -123,6 +131,26 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
         fromNegative(buffer, offset, value); // negative
       } else {
         fromArray(buffer, offset, ZERO, 0); // zero, NaN and others
+      }
+    }
+
+    function fromBigInt(buffer, offset, value) {
+      var ab = buffer.buffer;
+      if (ab instanceof ARRAYBUFFER) {
+        setBigInt(ab, offset, value);
+      } else {
+        var temp = new UINT8ARRAY(8);
+        setBigInt(temp.buffer, 0, value);
+        fromArray(buffer, offset, temp, 0);
+      }
+    }
+
+    function setBigInt(ab, offset, value) {
+      var view = new DATAVIEW(ab);
+      if (unsigned) {
+        view.setBigUint64(offset, value, !bigendian);
+      } else {
+        view.setBigInt64(offset, value, !bigendian);
       }
     }
 
@@ -159,6 +187,29 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
       var low = readInt32(buffer, offset + posL);
       if (!unsigned) high |= 0; // a trick to get signed
       return high ? (high * BIT32 + low) : low;
+    }
+
+    function toBigInt() {
+      var buffer = this.buffer;
+      var offset = this.offset;
+      var ab = buffer.buffer;
+
+      if (ab instanceof ARRAYBUFFER) {
+        return getBigInt(ab, offset);
+      } else {
+        var temp = new UINT8ARRAY(8);
+        fromArray(temp, 0, buffer, offset);
+        return getBigInt(temp.buffer, 0);
+      }
+    }
+
+    function getBigInt(ab, offset) {
+      var view = new DATAVIEW(ab);
+      if (unsigned) {
+        return view.getBigUint64(offset, !bigendian);
+      } else {
+        return view.getBigInt64(offset, !bigendian);
+      }
     }
 
     function toString(radix) {
