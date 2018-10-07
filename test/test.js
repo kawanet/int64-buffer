@@ -350,7 +350,9 @@ function allTests(uint64Name, int64Name) {
       var src = LE ? [].concat(POSB, NEGB) : [].concat(NEGB, POSB);
       var copy = src.slice();
       if (storageName === "buffer") {
-        src = bufferFrom(src);
+        // Buffer.from(arraybuffer) available since Node v4.5.0
+        // https://nodejs.org/en/blog/release/v4.5.0/
+        src = Buffer.from(src);
       } else if (storageName === "uint8array") {
         src = new UINT8ARRAY(src);
       } else if (storageName === "arraybuffer") {
@@ -617,11 +619,6 @@ function miscTests() {
       assert.ok(!Int64LE.isInt64LE(Uint64LE()));
     });
   });
-}
-
-// Buffer.from(buffer) added in node v5.10.0
-function bufferFrom(src) {
-  return Buffer.from ? Buffer.from(src) : new Buffer(src);
 }
 
 function ArrayLike(arg) {
