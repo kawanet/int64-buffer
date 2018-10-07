@@ -208,7 +208,11 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
     var buffer = this.buffer;
     var offset = this.offset;
     storage = null; // Array
-    if (raw !== false && offset === 0 && buffer.length === 8 && isArray(buffer)) return buffer;
+
+    if (raw !== false && isArray(buffer)) {
+      return (buffer.length === 8) ? buffer : buffer.slice(offset, offset + 8);
+    }
+
     return newArray(buffer, offset);
   }
 
@@ -231,7 +235,12 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
     var offset = this.offset;
     var arrbuf = buffer.buffer;
     storage = UINT8ARRAY;
-    if (raw !== false && offset === 0 && (arrbuf instanceof ARRAYBUFFER) && arrbuf.byteLength === 8) return arrbuf;
+
+    // arrbuf.slice() ignores buffer.offset until Node v8.0.0
+    if (raw !== false && !buffer.offset && (arrbuf instanceof ARRAYBUFFER)) {
+      return (arrbuf.byteLength === 8) ? arrbuf : arrbuf.slice(offset, offset + 8);
+    }
+
     var dest = new UINT8ARRAY(8);
     fromArray(dest, 0, buffer, offset);
     return dest.buffer;

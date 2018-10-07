@@ -594,6 +594,48 @@ function allTests(uint64Name, int64Name) {
         });
       });
     });
+
+    describe("raw", function() {
+      it(int64Name + "(array).toArray(raw)", function() {
+        var buf = ZERO.slice();
+        var c = new Int64Class(buf);
+        var mirror = c.toArray(true);
+        var copied = c.toArray(false);
+        buf[0] = buf[1] = buf[2] = buf[3] = buf[4] = buf[5] = buf[6] = buf[7] = 0xFF;
+        assert.equal(toHex(mirror), toHex(NEG1));
+        assert.equal(toHex(copied), toHex(ZERO));
+      });
+
+      itBuffer(int64Name + "(buffer).toBuffer(raw)", function() {
+        var buf = Buffer.from(ZERO);
+        var c = new Int64Class(buf);
+        var mirror = c.toBuffer(true);
+        var copied = c.toBuffer(false);
+        buf[0] = buf[1] = buf[2] = buf[3] = buf[4] = buf[5] = buf[6] = buf[7] = 0xFF;
+        assert.equal(toHex(mirror), toHex(NEG1));
+        assert.equal(toHex(copied), toHex(ZERO));
+      });
+
+      itArrayBuffer(int64Name + "(uint8array).toArrayBuffer(raw)", function() {
+        var buf = new Uint8Array(ZERO);
+        var c = new Int64Class(buf);
+        var mirror = new Uint8Array(c.toArrayBuffer(true));
+        var copied = new Uint8Array(c.toArrayBuffer(false));
+        buf[0] = buf[1] = buf[2] = buf[3] = buf[4] = buf[5] = buf[6] = buf[7] = 0xFF;
+        assert.equal(toHex(mirror), toHex(NEG1));
+        assert.equal(toHex(copied), toHex(ZERO));
+      });
+
+      itArrayBuffer(int64Name + "(arraybuffer).toArrayBuffer(raw)", function() {
+        var buf = new Uint8Array(ZERO);
+        var c = new Int64Class(buf.buffer);
+        var mirror = new Uint8Array(c.toArrayBuffer(true));
+        var copied = new Uint8Array(c.toArrayBuffer(false));
+        buf[0] = buf[1] = buf[2] = buf[3] = buf[4] = buf[5] = buf[6] = buf[7] = 0xFF;
+        assert.equal(toHex(mirror), toHex(NEG1));
+        assert.equal(toHex(copied), toHex(ZERO));
+      });
+    });
   }
 }
 
