@@ -1,3 +1,0 @@
-name: int64-buffer
-ui: mocha-bdd
-html: "test/zuul/ie.html"

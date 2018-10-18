@@ -59,7 +59,7 @@
     "coveralls": "./node_modules/.bin/nyc make test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "fixpack": "fixpack",
     "test": "make test",
-    "test-browser-local": "make test-browser-local"
+    "zuul-local": "./node_modules/.bin/zuul --open --local 4000 --ui mocha-bdd test/*.js"
   },
   "typings": "int64-buffer.d.ts"
 }
