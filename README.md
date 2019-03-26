@@ -10,7 +10,7 @@ This module provides two pair of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Ui
 ### Features
 
 - `Int64BE`/`Int64LE` for signed integer, `Uint64BE`/`Uint64LE` for unsigned.
-- `Int64BE`/`Uint64BE` for big-endian, `Uint64BE`/`Uint64LE` for little-endian.
+- `Int64BE`/`Uint64BE` for big-endian, `Int64LE`/`Uint64LE` for little-endian.
 - `Buffer`/`Uint8Array`/`Array`/`Array`-like storage of 8 bytes length with offset.
 - No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()` etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
