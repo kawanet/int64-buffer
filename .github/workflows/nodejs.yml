@@ -6,7 +6,7 @@ name: Node.js CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -24,8 +24,21 @@ jobs:
       - run: npm run build --if-present
       - run: npm test
       - run: make test-coverage
-      - name: Coveralls
+      - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./.nyc_output/lcov.info
+          flag-name: node-${{ matrix.node-version }}
+          parallel: true
+
+  # https://github.com/marketplace/actions/coveralls-github-action
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
