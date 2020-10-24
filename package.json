@@ -12,13 +12,12 @@
     "Jan Krems <jan.krems@groupon.com>"
   ],
   "devDependencies": {
-    "@types/node": "^10.11.4",
-    "coveralls": "^3.0.2",
-    "jshint": "^2.9.6",
-    "mocha": "^5.2.0",
-    "nyc": "^13.0.1",
-    "uglify-js": "^3.4.9",
-    "zuul": "^3.12.0"
+    "@types/node": "^14.14.2",
+    "coveralls": "^3.1.0",
+    "jshint": "^2.12.0",
+    "mocha": "^8.2.0",
+    "nyc": "^15.1.0",
+    "terser": "^5.3.8"
   },
   "engines": {
     "node": ">= 4.5.0"
@@ -58,8 +57,7 @@
   "scripts": {
     "coveralls": "./node_modules/.bin/nyc make test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "fixpack": "fixpack",
-    "test": "make test",
-    "zuul-local": "./node_modules/.bin/zuul --open --local 4000 --ui mocha-bdd test/*.js"
+    "test": "make test"
   },
   "typings": "int64-buffer.d.ts"
 }

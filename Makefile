@@ -16,7 +16,7 @@ $(DIST):
 	mkdir -p $(DIST)
 
 $(JSDEST): $(SRC) $(DIST)
-	./node_modules/.bin/uglifyjs $(SRC) -c -m -o $(JSDEST)
+	./node_modules/.bin/terser $(SRC) -c -m -o $(JSDEST)
 
 $(JSGZIP): $(JSDEST)
 	gzip -9 < $(JSDEST) > $(JSGZIP)
