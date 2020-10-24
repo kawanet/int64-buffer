@@ -10,17 +10,17 @@ JSGZIP=./dist/int64-buffer.min.js.gz
 all: test $(JSGZIP)
 
 clean:
-	rm -fr $(JSDEST)
+	rm -fr $(JSDEST) $(JSGZIP)
 
 $(DIST):
-	mkdir -p $(DIST)
+	mkdir -p $@
 
 $(JSDEST): $(SRC) $(DIST)
-	./node_modules/.bin/terser $(SRC) -c -m -o $(JSDEST)
+	./node_modules/.bin/terser $< -c -m -o $@
 
 $(JSGZIP): $(JSDEST)
-	gzip -9 < $(JSDEST) > $(JSGZIP)
-	ls -l $(JSDEST) $(JSGZIP)
+	gzip -9 < $^ > $@
+	ls -l $^ $@
 
 test:
 	@if [ "x$(BROWSER)" = "x" ]; then make test-node; else make test-browser; fi
