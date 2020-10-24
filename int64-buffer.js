@@ -100,7 +100,7 @@ var Uint64BE, Int64BE, Uint64LE, Int64LE;
         raddix = offset;
         value = buffer;
         offset = 0;
-        buffer = new _storage(8);
+        buffer = (storage === BUFFER) ? BUFFER.alloc(8) : new _storage(8);
       }
 
       that.buffer = buffer;

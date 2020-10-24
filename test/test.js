@@ -119,7 +119,7 @@ function allTests(uint64Name, int64Name) {
       it(uint64Name + "().toJSON()", function() {
         SAMPLES.forEach(function(array) {
           var c = Uint64Class(array);
-          assert.equal(c.toJSON(), c.toString(10));
+          assert.equal(c.toJSON(), +c.toString(10));
         });
       });
 
@@ -213,7 +213,7 @@ function allTests(uint64Name, int64Name) {
       it(int64Name + "().toJSON()", function() {
         SAMPLES.forEach(function(array) {
           var c = Int64Class(array);
-          assert.equal(c.toJSON(), c.toString(10));
+          assert.equal(c.toJSON(), +c.toString(10));
         });
       });
 
@@ -271,8 +271,16 @@ function allTests(uint64Name, int64Name) {
     var highpos = LE ? 15 : 8;
     var lowpos = LE ? 8 : 15;
 
+    function alloc(size) {
+      // Buffer() is deprecated
+      if (StorageClass === BUFFER) return BUFFER.alloc(size);
+
+      // other than Buffer
+      return new StorageClass(size);
+    }
+
     itSkip(className + "(" + storageName + ",offset)", function() {
-      var buffer = new StorageClass(24);
+      var buffer = alloc(24);
       var raw = buffer;
       if (isArrayBuffer(buffer)) buffer = (raw = new Uint8Array(buffer)).buffer;
       for (var i = 0; i < 24; i++) {
@@ -299,18 +307,18 @@ function allTests(uint64Name, int64Name) {
     });
 
     itSkip(className + "(" + storageName + ",offset,number)", function() {
-      var buffer = new StorageClass(24);
+      var buffer = alloc(24);
       var val = new Int64Class(buffer, 8, 1234567890);
       assert.equal(val.toNumber(), 1234567890);
       assert.equal(val.toString(), "1234567890");
-      assert.equal(val.toJSON(), "1234567890");
+      assert.equal(val.toJSON(), +"1234567890");
       if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
       assert.equal(buffer[highpos], 0);
       assert.equal(buffer[lowpos], 1234567890 & 255);
     });
 
     itSkip(className + "(" + storageName + ",offset,high,low)", function() {
-      var buffer = new StorageClass(24);
+      var buffer = alloc(24);
       var val = new Int64Class(buffer, 8, 0x12345678, 0x90abcdef);
       assert.equal(val.toString(16), "1234567890abcdef");
       if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
@@ -319,18 +327,18 @@ function allTests(uint64Name, int64Name) {
     });
 
     itSkip(className + "(" + storageName + ",offset,string,raddix)", function() {
-      var buffer = new StorageClass(24);
+      var buffer = alloc(24);
       var val = new Int64Class(buffer, 8, "1234567890", 16);
       assert.equal(val.toNumber(), 0x1234567890);
       assert.equal(val.toString(16), "1234567890");
-      assert.equal(val.toJSON(), (0x1234567890).toString());
+      assert.equal(val.toJSON(), +(0x1234567890).toString());
       if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
       assert.equal(buffer[highpos], 0);
       assert.equal(buffer[lowpos], 0x1234567890 & 255);
     });
 
     itSkip(className + "(" + storageName + ",offset,array,offset)", function() {
-      var buffer = new StorageClass(16);
+      var buffer = alloc(16);
       var src = LE ? [].concat(POSB, NEGB) : [].concat(NEGB, POSB);
       var val = Int64Class(buffer, 8, src, 4);
       assert.equal(val.toString(16), "7654321012345678");
@@ -701,5 +709,5 @@ function assert(value) {
 }
 
 function equal(actual, expected) {
-  if (actual != expected) throw new Error(actual + " = " + expected);
+  if (actual !== expected) throw new Error(actual + " = " + expected);
 }
