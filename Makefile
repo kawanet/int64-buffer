@@ -27,6 +27,10 @@ test:
 
 test-node: jshint mocha
 
+test-coverage:
+	./node_modules/.bin/nyc make mocha
+	./node_modules/.bin/nyc report --reporter=text-lcov > .nyc_output/lcov.info
+
 mocha:
 	./node_modules/.bin/mocha -R spec $(TESTS)
 

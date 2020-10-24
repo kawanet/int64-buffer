@@ -55,7 +55,7 @@
     "url": "git+https://github.com/kawanet/int64-buffer.git"
   },
   "scripts": {
-    "coveralls": "./node_modules/.bin/nyc make test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
+    "coveralls": "make test-coverage",
     "fixpack": "fixpack",
     "test": "make test"
   },
