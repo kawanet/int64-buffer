@@ -2,7 +2,9 @@
 
 64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript
 
-[![npm version](https://badge.fury.io/js/int64-buffer.svg)](http://badge.fury.io/js/int64-buffer) [![Build Status](https://travis-ci.org/kawanet/int64-buffer.svg?branch=master)](https://travis-ci.org/kawanet/int64-buffer) [![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=master)](https://coveralls.io/github/kawanet/int64-buffer?branch=master)
+[![npm version](https://badge.fury.io/js/int64-buffer.svg)](https://www.npmjs.com/package/int64-buffer)
+[![Node.js CI](https://github.com/kawanet/int64-buffer/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/kawanet/int64-buffer/actions/)
+[![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=master)](https://coveralls.io/github/kawanet/int64-buffer?branch=master)
 
 JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision.
 This module provides two pair of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Uint64LE` which could hold 64 bits long integer and loose no bit.
