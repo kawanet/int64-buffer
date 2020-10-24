@@ -7,7 +7,7 @@ DIST=./dist
 JSDEST=./dist/int64-buffer.min.js
 JSGZIP=./dist/int64-buffer.min.js.gz
 
-all: test $(JSGZIP)
+all: $(JSGZIP)
 
 clean:
 	rm -fr $(JSDEST) $(JSGZIP)
@@ -22,10 +22,7 @@ $(JSGZIP): $(JSDEST)
 	gzip -9 < $^ > $@
 	ls -l $^ $@
 
-test:
-	@if [ "x$(BROWSER)" = "x" ]; then make test-node; else make test-browser; fi
-
-test-node: jshint mocha
+test: all jshint mocha
 
 test-coverage:
 	./node_modules/.bin/nyc make mocha
