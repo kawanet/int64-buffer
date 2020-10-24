@@ -119,7 +119,7 @@ function allTests(uint64Name, int64Name) {
       it(uint64Name + "().toJSON()", function() {
         SAMPLES.forEach(function(array) {
           var c = Uint64Class(array);
-          assert.equal(c.toJSON(), c.toString(10));
+          assert.equal(c.toJSON(), +c.toString(10));
         });
       });
 
@@ -213,7 +213,7 @@ function allTests(uint64Name, int64Name) {
       it(int64Name + "().toJSON()", function() {
         SAMPLES.forEach(function(array) {
           var c = Int64Class(array);
-          assert.equal(c.toJSON(), c.toString(10));
+          assert.equal(c.toJSON(), +c.toString(10));
         });
       });
 
@@ -303,7 +303,7 @@ function allTests(uint64Name, int64Name) {
       var val = new Int64Class(buffer, 8, 1234567890);
       assert.equal(val.toNumber(), 1234567890);
       assert.equal(val.toString(), "1234567890");
-      assert.equal(val.toJSON(), "1234567890");
+      assert.equal(val.toJSON(), +"1234567890");
       if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
       assert.equal(buffer[highpos], 0);
       assert.equal(buffer[lowpos], 1234567890 & 255);
@@ -323,7 +323,7 @@ function allTests(uint64Name, int64Name) {
       var val = new Int64Class(buffer, 8, "1234567890", 16);
       assert.equal(val.toNumber(), 0x1234567890);
       assert.equal(val.toString(16), "1234567890");
-      assert.equal(val.toJSON(), (0x1234567890).toString());
+      assert.equal(val.toJSON(), +(0x1234567890).toString());
       if (isArrayBuffer(buffer)) buffer = new Uint8Array(buffer);
       assert.equal(buffer[highpos], 0);
       assert.equal(buffer[lowpos], 0x1234567890 & 255);
@@ -701,5 +701,5 @@ function assert(value) {
 }
 
 function equal(actual, expected) {
-  if (actual != expected) throw new Error(actual + " = " + expected);
+  if (actual !== expected) throw new Error(actual + " = " + expected);
 }
