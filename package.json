@@ -1,7 +1,7 @@
 {
   "name": "int64-buffer",
   "description": "64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "@kawanet",
   "bugs": {
     "url": "https://github.com/kawanet/int64-buffer/issues"
@@ -12,12 +12,12 @@
     "Jan Krems <jan.krems@groupon.com>"
   ],
   "devDependencies": {
-    "@types/node": "^14.14.2",
+    "@types/node": "^14.14.43",
     "coveralls": "^3.1.0",
     "jshint": "^2.12.0",
-    "mocha": "^8.2.0",
+    "mocha": "^8.3.2",
     "nyc": "^15.1.0",
-    "terser": "^5.3.8"
+    "terser": "^5.7.0"
   },
   "engines": {
     "node": ">= 4.5.0"
