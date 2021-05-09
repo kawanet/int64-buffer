@@ -2,7 +2,6 @@
 
 SRC=./int64-buffer.js
 TESTS=*.json ./test/*.js
-HINTS=$(SRC) $(TESTS)
 DIST=./dist
 JSDEST=./dist/int64-buffer.min.js
 JSGZIP=./dist/int64-buffer.min.js.gz
@@ -32,6 +31,6 @@ mocha:
 	./node_modules/.bin/mocha -R spec $(TESTS)
 
 jshint:
-	./node_modules/.bin/jshint $(HINTS)
+	./node_modules/.bin/jshint .
 
 .PHONY: all clean test jshint mocha
