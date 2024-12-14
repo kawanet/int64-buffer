@@ -1,7 +1,7 @@
 #!/usr/bin/env bash -c make
 
 SRC=./int64-buffer.js
-TESTS=*.json ./test/*.js
+TESTS=./test/*.js
 DIST=./dist
 JSDEST=./dist/int64-buffer.min.js
 JSGZIP=./dist/int64-buffer.min.js.gz
