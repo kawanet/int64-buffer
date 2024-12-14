@@ -1,9 +1,13 @@
 *.min.js.gz
+*.mjs
+*.tgz
 *~
 .DS_Store
-.idea
+.idea/
+.vscode/
 .nyc_output/
 gh-pages
 node_modules
 npm-debug.log*
 package-lock.json
+~$*

@@ -19,12 +19,18 @@
     "nyc": "^17.1.0",
     "terser": "^5.37.0"
   },
+  "exports": {
+    "types": "./int64-buffer.d.ts",
+    "import": "./int64-buffer.mjs",
+    "require": "./int64-buffer.js"
+  },
   "files": [
     "LICENSE",
     "README.md",
     "dist/int64-buffer.min.js",
     "int64-buffer.js",
-    "int64-buffer.d.ts"
+    "int64-buffer.d.ts",
+    "int64-buffer.mjs"
   ],
   "homepage": "https://github.com/kawanet/int64-buffer",
   "jshintConfig": {
@@ -65,5 +71,6 @@
     "prepack": "make clean all test",
     "test": "make test"
   },
+  "type": "commonjs",
   "typings": "int64-buffer.d.ts"
 }
