@@ -5,26 +5,27 @@
 [![npm version](https://badge.fury.io/js/int64-buffer.svg)](https://www.npmjs.com/package/int64-buffer)
 [![Node.js CI](https://github.com/kawanet/int64-buffer/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/kawanet/int64-buffer/actions/)
 [![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=master)](https://coveralls.io/github/kawanet/int64-buffer?branch=master)
+[![gzip size](https://img.badgesize.io/https://unpkg.com/int64-buffer/dist/int64-buffer.min.js?compression=gzip)](https://unpkg.com/int64-buffer/dist/int64-buffer.min.js)
 
-JavaScript's number based on IEEE-754 could only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) precision.
-This module provides two pair of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Uint64LE` which could hold 64 bits long integer and loose no bit.
+JavaScript's number type, based on IEEE-754, can only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) of precision.
+This module provides two pairs of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Uint64LE`, which can hold 64-bit long integers without losing any bits.
 
 ### Features
 
-- `Int64BE`/`Int64LE` for signed integer, `Uint64BE`/`Uint64LE` for unsigned.
+- `Int64BE`/`Int64LE` for signed integers, `Uint64BE`/`Uint64LE` for unsigned integers.
 - `Int64BE`/`Uint64BE` for big-endian, `Int64LE`/`Uint64LE` for little-endian.
 - `Buffer`/`Uint8Array`/`Array`/`Array`-like storage of 8 bytes length with offset.
-- No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()` etc.
-- Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) etc.
-- Small. 3KB when minified. No other module required. Portable pure JavaScript.
-- [Tested](https://github.com/kawanet/int64-buffer/actions/) on node.js v10, v12, v14 and Web browsers.
+- No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()`, etc.
+- Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) or similar libraries.
+- Small. 3KB when minified. No other modules required. Portable pure JavaScript.
+- [Tested](https://github.com/kawanet/int64-buffer/actions/) on node.js v18, v20, v22 and Web browsers.
 
 ### Usage
 
-`Int64BE` is the class to host a 64 bit signed long integer `int64_t`.
+`Int64BE` is the class to host a 64-bit signed long integer `int64_t`.
 
 ```js
-const {Int64BE} = require("int64-buffer");
+import {Int64BE} from "int64-buffer";
 
 const big = new Int64BE(-1);
 
@@ -35,10 +36,10 @@ console.log(big.toBuffer()); // <Buffer ff ff ff ff ff ff ff ff>
 
 It uses `Buffer` on Node.js and `Uint8Array` on modern Web browsers.
 
-`Uint64BE` is the class to host a 64 bit unsigned positive long integer `uint64_t`.
+`Uint64BE` is the class to host a 64-bit unsigned positive long integer `uint64_t`.
 
 ```js
-const {Uint64BE} = require("int64-buffer");
+import {Uint64BE} from "int64-buffer";
 
 const big = new Uint64BE(Math.pow(2, 63)); // a big number with 64 bits
 
@@ -47,7 +48,7 @@ console.log(big - 0); // 9223372036854776000 = IEEE-754 loses last bits
 console.log(big + ""); // "9223372036854775808" = perfectly correct
 ```
 
-`Int64LE` and `Uint64LE` work as same as above but with little-endian storage.
+`Int64LE` and `Uint64LE` work the same way as above but with little-endian storage.
 
 ### Input Constructor
 
@@ -210,7 +211,7 @@ console.log(big.toArray()); // [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 
 ### The MIT License (MIT)
 
-Copyright (c) 2015-2021 Yusuke Kawasaki
+Copyright (c) 2015-2024 Yusuke Kawasaki
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
