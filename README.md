@@ -5,6 +5,7 @@
 [![npm version](https://badge.fury.io/js/int64-buffer.svg)](https://www.npmjs.com/package/int64-buffer)
 [![Node.js CI](https://github.com/kawanet/int64-buffer/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/kawanet/int64-buffer/actions/)
 [![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=master)](https://coveralls.io/github/kawanet/int64-buffer?branch=master)
+[![gzip size](https://img.badgesize.io/https://unpkg.com/int64-buffer/dist/int64-buffer.min.js?compression=gzip)](https://unpkg.com/int64-buffer/dist/int64-buffer.min.js)
 
 JavaScript's number type, based on IEEE-754, can only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) of precision.
 This module provides two pairs of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Uint64LE`, which can hold 64-bit long integers without losing any bits.
