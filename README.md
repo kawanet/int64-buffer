@@ -2,10 +2,10 @@
 
 64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript
 
-[![npm version](https://badge.fury.io/js/int64-buffer.svg)](https://www.npmjs.com/package/int64-buffer)
-[![Node.js CI](https://github.com/kawanet/int64-buffer/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/kawanet/int64-buffer/actions/)
+[![npm version](https://img.shields.io/npm/v/int64-buffer)](https://www.npmjs.com/package/int64-buffer)
+[![Node.js CI](https://github.com/kawanet/int64-buffer/actions/workflows/nodejs.yml/badge.svg?branch=master)](https://github.com/kawanet/int64-buffer/actions/)
 [![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=master)](https://coveralls.io/github/kawanet/int64-buffer?branch=master)
-[![gzip size](https://img.badgesize.io/https://unpkg.com/int64-buffer/dist/int64-buffer.min.js?compression=gzip)](https://unpkg.com/int64-buffer/dist/int64-buffer.min.js)
+[![gzip size](https://img.badgesize.io/https://cdn.jsdelivr.net/npm/int64-buffer/dist/int64-buffer.min.js?compression=gzip)](https://cdn.jsdelivr.net/npm/int64-buffer/dist/int64-buffer.min.js)
 
 JavaScript's number type, based on IEEE-754, can only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) of precision.
 This module provides two pairs of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`Uint64LE`, which can hold 64-bit long integers without losing any bits.
@@ -18,7 +18,7 @@ This module provides two pairs of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`U
 - No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()`, etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) or similar libraries.
 - Small. 3KB when minified. No other modules required. Portable pure JavaScript.
-- [Tested](https://github.com/kawanet/int64-buffer/actions/) on node.js v18, v20, v22 and Web browsers.
+- [Tested](https://github.com/kawanet/int64-buffer/actions/) on node.js v22, v24, v26 and Web browsers.
 
 ### Usage
 
@@ -211,7 +211,7 @@ console.log(big.toArray()); // [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 
 ### The MIT License (MIT)
 
-Copyright (c) 2015-2024 Yusuke Kawasaki
+Copyright (c) 2015-2026 Yusuke Kawasaki
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

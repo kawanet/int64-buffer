@@ -12,20 +12,22 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18, 20, 22 ]
+        node-version: ["22", "24", "26"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm run build --if-present
       - run: npm test
       - run: make test-coverage
+        if: matrix.node-version == '22'
       - name: Coveralls Parallel
-        uses: coverallsapp/github-action@master
+        if: matrix.node-version == '22'
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./.nyc_output/lcov.info
@@ -38,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
-          github-token: ${{ secrets.github_token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
