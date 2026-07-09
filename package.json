@@ -20,9 +20,11 @@
     "terser": "^5.49.0"
   },
   "exports": {
-    "types": "./int64-buffer.d.ts",
-    "import": "./int64-buffer.mjs",
-    "require": "./int64-buffer.js"
+    ".": {
+      "types": "./int64-buffer.d.ts",
+      "import": "./int64-buffer.mjs",
+      "require": "./int64-buffer.js"
+    }
   },
   "files": [
     "LICENSE",
