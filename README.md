@@ -18,7 +18,7 @@ This module provides two pairs of classes: `Int64BE`/`Uint64BE` and `Int64LE`/`U
 - No mathematical methods provided, such as `add()`, `sub()`, `mul()`, `div()`, etc.
 - Optimized only for 64 bits. If you need Int128, use [bignum](https://www.npmjs.com/package/bignum) or similar libraries.
 - Small. 3KB when minified. No other modules required. Portable pure JavaScript.
-- [Tested](https://github.com/kawanet/int64-buffer/actions/) on node.js v18, v20, v22 and Web browsers.
+- [Tested](https://github.com/kawanet/int64-buffer/actions/) on node.js v22, v24, v26 and Web browsers.
 
 ### Usage
 
@@ -211,7 +211,7 @@ console.log(big.toArray()); // [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 
 ### The MIT License (MIT)
 
-Copyright (c) 2015-2024 Yusuke Kawasaki
+Copyright (c) 2015-2026 Yusuke Kawasaki
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
