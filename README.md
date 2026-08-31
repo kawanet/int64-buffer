@@ -3,8 +3,8 @@
 64bit Long Integer on Buffer/Array/ArrayBuffer in Pure JavaScript
 
 [![npm version](https://img.shields.io/npm/v/int64-buffer)](https://www.npmjs.com/package/int64-buffer)
-[![Node.js CI](https://github.com/kawanet/int64-buffer/actions/workflows/nodejs.yml/badge.svg?branch=master)](https://github.com/kawanet/int64-buffer/actions/)
-[![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=master)](https://coveralls.io/github/kawanet/int64-buffer?branch=master)
+[![Node.js CI](https://github.com/kawanet/int64-buffer/actions/workflows/nodejs.yml/badge.svg?branch=main)](https://github.com/kawanet/int64-buffer/actions/)
+[![Coverage Status](https://coveralls.io/repos/github/kawanet/int64-buffer/badge.svg?branch=main)](https://coveralls.io/github/kawanet/int64-buffer?branch=main)
 [![gzip size](https://img.badgesize.io/https://cdn.jsdelivr.net/npm/int64-buffer/dist/int64-buffer.min.js?compression=gzip)](https://cdn.jsdelivr.net/npm/int64-buffer/dist/int64-buffer.min.js)
 
 JavaScript's number type, based on IEEE-754, can only handle [53 bits](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) of precision.
