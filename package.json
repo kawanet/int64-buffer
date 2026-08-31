@@ -19,6 +19,13 @@
     "nyc": "^18.0.0",
     "terser": "^5.51.2"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18.0",
+      "onFail": "warn"
+    }
+  },
   "exports": {
     ".": {
       "types": "./int64-buffer.d.ts",
