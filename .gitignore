@@ -3,6 +3,7 @@
 *.tgz
 *~
 .DS_Store
+.Thumbs
 .idea/
 .vscode/
 .nyc_output/
@@ -11,3 +12,4 @@ node_modules
 npm-debug.log*
 package-lock.json
 ~$*
+!browser/tests.cli.mjs
