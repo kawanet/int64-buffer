@@ -7,7 +7,7 @@ PLAYWRIGHT_VERSION := 1.62.1
 all: dist bundled
 
 bundled:
-    @: # NOP
+	@: # NOP
 
 # Keep Playwright out of package.json. CI installs it transiently alongside
 # the project's build dependencies, then downloads only the headless shell.

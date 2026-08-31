@@ -43,7 +43,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: dist
-          path: event-lite.mjs
+          path: int64-buffer.mjs
           retention-days: 1
 
   stage:
