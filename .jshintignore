@@ -1,4 +1,5 @@
 .github/
+browser/
 .nyc_output/
 dist/
 node_modules/

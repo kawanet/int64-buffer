@@ -39,7 +39,7 @@ mocha: $(JSTEST) $(ESMTEST)
 	./node_modules/.bin/mocha -R spec $(ESMTEST)
 
 jshint:
-	./node_modules/.bin/jshint .
+	./node_modules/.bin/jshint . --extra-ext .json
 
 #### ES Module
 
