@@ -12,4 +12,4 @@ node_modules
 npm-debug.log*
 package-lock.json
 ~$*
-!browser/tests.cli.mjs
+!browser/import.mjs
