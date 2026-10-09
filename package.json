@@ -36,6 +36,7 @@
   "files": [
     "LICENSE",
     "README.md",
+    "browser/import.mjs",
     "dist/int64-buffer.min.js",
     "int64-buffer.js",
     "int64-buffer.d.ts",
