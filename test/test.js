@@ -1,9 +1,11 @@
-// #!/usr/bin/env mocha -R spec
+//// import {strict as assert} from "node:assert";
+//// import {describe, it} from "node:test";
+//// import * as exported from "int64-buffer";
 
-assert.equal = equal;
-assert.ok = assert;
+var assert = require("node:assert").strict;
+var {describe, it} = require("node:test");
+var exported = require("../int64-buffer");
 
-var exported = ("undefined" !== typeof require) ? require("../int64-buffer") : window;
 var Uint64LE = exported.Uint64LE;
 var Int64LE = exported.Int64LE;
 var Uint64BE = exported.Uint64BE;
@@ -702,12 +704,4 @@ function toString16(val) {
 
 function lpad(str, len) {
   return "00000000".substr(0, len - str.length) + str;
-}
-
-function assert(value) {
-  if (!value) throw new Error(value + " = " + true);
-}
-
-function equal(actual, expected) {
-  if (actual !== expected) throw new Error(actual + " = " + expected);
 }

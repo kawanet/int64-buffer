@@ -28,15 +28,13 @@ $(JSGZIP): $(JSDEST)
 	gzip -9 < $^ > $@
 	ls -l $^ $@
 
-test: all jshint smoke mocha
+test: all jshint smoke $(ESMTEST)
+	node --test $(JSTEST)
+	node --test $(ESMTEST)
 
 test-coverage:
-	./node_modules/.bin/nyc make mocha
+	./node_modules/.bin/nyc node --test $(JSTEST)
 	./node_modules/.bin/nyc report --reporter=text-lcov > .nyc_output/lcov.info
-
-mocha: $(JSTEST) $(ESMTEST)
-	./node_modules/.bin/mocha -R spec $(JSTEST)
-	./node_modules/.bin/mocha -R spec $(ESMTEST)
 
 jshint:
 	./node_modules/.bin/jshint . --extra-ext .json
@@ -49,7 +47,7 @@ $(ESMDEST): $(SRC) Makefile
 
 $(ESMTEST): $(JSTEST) Makefile
 	mkdir -p $(dir $@)
-	perl -pe 's#^(var exported)#/// $$1#; s#^.*#import * as exported from "../int64-buffer.mjs";# if $$. == 1' < $< > $@
+	perl -pe 's#^(var .* = require\()#//// $$1#; s#^//// (import) # $$1 #' < $< > $@
 
 ####
 
@@ -71,4 +69,4 @@ smoke-minjs: $(JSDEST)
 
 ####
 
-.PHONY: all clean test jshint mocha smoke
+.PHONY: all clean test jshint smoke

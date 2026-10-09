@@ -15,7 +15,6 @@
     "@types/node": "^24.13.3",
     "coveralls": "^3.1.1",
     "jshint": "^2.13.6",
-    "mocha": "^11.8.0",
     "nyc": "^18.0.0",
     "terser": "^5.51.2"
   },
@@ -43,6 +42,7 @@
   ],
   "homepage": "https://github.com/kawanet/int64-buffer",
   "jshintConfig": {
+    "esversion": 6,
     "globals": {
       "describe": true,
       "it": true,
