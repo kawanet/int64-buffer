@@ -21,6 +21,7 @@
 .pnpm-debug.log*
 .vscode
 CLAUDE.local.md
+browser/tests
 gh-pages
 node_modules
 nohup.out
