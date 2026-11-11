@@ -70,6 +70,12 @@
   ],
   "license": "MIT",
   "main": "int64-buffer.js",
+  "overrides": {
+    "jshint": {
+      "lodash": "^4.18.1",
+      "minimatch": "^3.1.5"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kawanet/int64-buffer.git"
