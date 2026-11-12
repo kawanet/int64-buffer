@@ -39,6 +39,6 @@ $(PLAYWRIGHT_CONFIG): Makefile
 	fi
 
 clean:
-	/bin/rm -fr $(ALL)
+	/bin/rm -fr tests $(ALL)
 
 .PHONY: all bundled install test clean
